@@ -12,6 +12,7 @@ import { Picker } from '@react-native-picker/picker';
 import { styled } from 'nativewind';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../redux/cartSlice';
+import { Ionicons } from '@expo/vector-icons';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -78,20 +79,18 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         />
         <View className="flex-row justify-between items-start my-2">
           <View>
-            <StyledText className="text-2xl font-bold">{firstLine}</StyledText>
+            <StyledText className="text-xl font-bold">{firstLine}</StyledText>
             {secondLine && (
-              <StyledText className="text-2xl font-bold">
+              <StyledText className="text-xl font-bold">
                 {secondLine}
               </StyledText>
             )}
             {thirdLine && (
-              <StyledText className="text-2xl font-bold">
-                {thirdLine}
-              </StyledText>
+              <StyledText className="text-xl font-bold">{thirdLine}</StyledText>
             )}
           </View>
-          <StyledText className="text-2xl font-bold text-black">
-            {product.price.amount}{' '}
+          <StyledText className="text-xl font-bold text-black">
+            {product.price.amount}
             {product.price.currency === 'GBP' ? '£' : product.price.currency}
           </StyledText>
         </View>
@@ -101,7 +100,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
           </StyledText>
           <StyledText
             className={`text-lg ${
-              isOutOfStock ? 'text-red-500' : 'text-green-500'
+              isOutOfStock ? 'text-red-500' : 'text-gray-500'
             }`}
           >
             {product.stockStatus.toLowerCase()}
@@ -126,18 +125,18 @@ const ProductDetailsScreen = ({ route, navigation }) => {
           <View className="flex-row items-center">
             <TouchableOpacity
               onPress={decreaseQuantity}
-              className="bg-gray-200 w-10 h-10 rounded-full items-center justify-center"
+              className="bg-gray-200 w-8 h-8 rounded-full items-center justify-center"
               disabled={isOutOfStock}
             >
-              <Text className="text-xl">-</Text>
+              <Ionicons name="remove" size={15} color="black" />
             </TouchableOpacity>
-            <StyledText className="text-lg mx-3">{quantity}</StyledText>
+            <StyledText className="text-base mx-3">{quantity}</StyledText>
             <TouchableOpacity
               onPress={increaseQuantity}
-              className="bg-gray-200 w-10 h-10 rounded-full items-center justify-center"
+              className="bg-gray-200 w-8 h-8 rounded-full items-center justify-center"
               disabled={isOutOfStock}
             >
-              <Text className="text-xl">+</Text>
+              <Ionicons name="add" size={15} color="black" />
             </TouchableOpacity>
           </View>
         </View>

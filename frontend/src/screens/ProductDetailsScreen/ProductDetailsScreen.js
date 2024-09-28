@@ -30,7 +30,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         <StyledText className="text-lg text-gray-500">
           {product.brandName}
         </StyledText>
-        <StyledText className="text-lg text-green-500 my-2">
+        <StyledText className="text-lg text-gray-500 my-2">
           {product.price.amount}{' '}
           {product.price.currency === 'GBP' ? '£' : product.price.currency}
         </StyledText>

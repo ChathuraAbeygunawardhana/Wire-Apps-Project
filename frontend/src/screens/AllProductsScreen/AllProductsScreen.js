@@ -40,7 +40,7 @@ const AllProductsScreen = ({ navigation }) => {
         <View className="flex-1 p-3 bg-gray-100 rounded-lg shadow-md shadow-black/50">
           <Image
             source={{ uri: item.mainImage }}
-            style={{ width: '100%', height: 80, borderRadius: 8 }}
+            style={{ width: '100%', height: 120, borderRadius: 8 }} // Increased height to 120
             resizeMode="contain"
           />
           <Text

@@ -56,6 +56,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         price: product.price,
         size: selectedSize,
         quantity: quantity,
+        image: product.mainImage,
       })
     );
 

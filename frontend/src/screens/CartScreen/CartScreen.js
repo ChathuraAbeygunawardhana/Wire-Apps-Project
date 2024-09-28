@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Image } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart, updateQuantity } from '../../redux/cartSlice';
 import { Appbar } from 'react-native-paper';
@@ -9,15 +9,38 @@ const CartScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const renderItem = ({ item }) => (
-    <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
-      <View>
-        <Text className="font-bold">{item.name}</Text>
+    <View
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: '#E5E7EB',
+        backgroundColor: 'white',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 }, // Adjusted height to direct shadow downwards
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        borderRadius: 8,
+        marginTop: 12,
+      }}
+    >
+      <Image
+        source={{ uri: item.image }}
+        style={{ width: 80, height: 80, borderRadius: 8, marginRight: 16 }}
+        resizeMode="contain"
+      />
+      <View style={{ flex: 1 }}>
+        <Text style={{ fontWeight: 'bold' }}>{item.name}</Text>
         <Text>Size: {item.size}</Text>
         <Text>
-          Price: {item.price.amount} {item.price.currency}
+          Price: {item.price.amount}{' '}
+          {item.price.currency === 'GBP' ? '£' : item.price.currency}
         </Text>
       </View>
-      <View className="flex-row items-center">
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <TouchableOpacity
           onPress={() =>
             dispatch(
@@ -30,7 +53,7 @@ const CartScreen = ({ navigation }) => {
           }
           disabled={item.quantity === 1}
         >
-          <Text className="text-2xl px-2">-</Text>
+          <Text style={{ fontSize: 24, paddingHorizontal: 8 }}>-</Text>
         </TouchableOpacity>
         <Text>{item.quantity}</Text>
         <TouchableOpacity
@@ -44,15 +67,15 @@ const CartScreen = ({ navigation }) => {
             )
           }
         >
-          <Text className="text-2xl px-2">+</Text>
+          <Text style={{ fontSize: 24, paddingHorizontal: 8 }}>+</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() =>
             dispatch(removeFromCart({ id: item.id, size: item.size }))
           }
-          className="ml-4"
+          style={{ marginLeft: 16 }}
         >
-          <Text className="text-red-500">Remove</Text>
+          <Text style={{ color: 'red' }}>Remove</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -65,12 +88,14 @@ const CartScreen = ({ navigation }) => {
   };
 
   return (
-    <View className="flex-1 bg-white">
-      <Appbar.Header className="bg-white">
-        <Appbar.Content title="Cart" className="items-center" />
+    <View style={{ flex: 1, backgroundColor: '#E5E7EB' }}>
+      <Appbar.Header style={{ backgroundColor: 'white' }}>
+        <Appbar.Content title="Cart" style={{ alignItems: 'center' }} />
       </Appbar.Header>
       {cartItems.length === 0 ? (
-        <View className="flex-1 justify-center items-center">
+        <View
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+        >
           <Text>Your cart is empty</Text>
         </View>
       ) : (
@@ -79,10 +104,20 @@ const CartScreen = ({ navigation }) => {
             data={cartItems}
             renderItem={renderItem}
             keyExtractor={(item) => `${item.id}-${item.size}`}
+            style={{ paddingHorizontal: 8 }}
           />
-          <View className="p-4 border-t border-gray-200">
-            <Text className="text-xl font-bold">
-              Total: {calculateTotal()} {cartItems[0].price.currency}
+          <View
+            style={{
+              padding: 16,
+              borderTopWidth: 1,
+              borderTopColor: '#E5E7EB',
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+              Total: {calculateTotal()}{' '}
+              {cartItems[0].price.currency === 'GBP'
+                ? '£'
+                : cartItems[0].price.currency}
             </Text>
           </View>
         </>

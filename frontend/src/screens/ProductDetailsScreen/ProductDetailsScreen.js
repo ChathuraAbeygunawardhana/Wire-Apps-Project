@@ -104,11 +104,23 @@ const ProductDetailsScreen = ({ route, navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
+        {/* selected size and total price section */}
+        {selectedSize && (
+          <View className="flex-row justify-between items-center mt-5">
+            <StyledText className="text-base">
+              {`Size ${selectedSize} x ${quantity}`}
+            </StyledText>
+            <StyledText className="text-base font-bold">
+              {`${(product.price.amount * quantity).toFixed(2)} ${
+                product.price.currency === 'GBP' ? '£' : product.price.currency
+              }`}
+            </StyledText>
+          </View>
+        )}
         <StyledText className="text-base text-black mt-5">
           {product.description}
         </StyledText>
         <View className="mb-5" />
-        {/* Added space at the bottom of the quantity section */}
       </ScrollView>
       <View className="px-3 pb-5">
         <Button

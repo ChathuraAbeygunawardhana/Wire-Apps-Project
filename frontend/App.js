@@ -29,7 +29,7 @@ const AllProductsStack = () => (
       component={ProductDetailsScreen}
       options={{
         headerShown: false,
-        ...TransitionPresets.SlideFromRightIOS, // Apply the sliding animation
+        ...TransitionPresets.ScaleFromCenterAndroid, // Apply the scale from center animation
       }}
     />
   </Stack.Navigator>

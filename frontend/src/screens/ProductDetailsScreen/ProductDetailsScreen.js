@@ -57,6 +57,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         size: selectedSize,
         quantity: quantity,
         image: product.mainImage,
+        color: product.colour,
       })
     );
 
@@ -68,7 +69,6 @@ const ProductDetailsScreen = ({ route, navigation }) => {
       <Appbar.Header className="bg-white h-14">
         <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title="Product Details" className="items-center" />
-        <Appbar.Action icon="magnify" onPress={() => {}} />
       </Appbar.Header>
       <ScrollView className="px-4 flex-1">
         <StyledImage
@@ -90,7 +90,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
               </StyledText>
             )}
           </View>
-          <StyledText className="text-2xl font-bold text-gray-500">
+          <StyledText className="text-2xl font-bold text-black">
             {product.price.amount}{' '}
             {product.price.currency === 'GBP' ? '£' : product.price.currency}
           </StyledText>
@@ -121,7 +121,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
             ))}
           </Picker>
         </View>
-        <View className="flex-row items-center justify-between mt-5">
+        <View className="flex-row items-center justify-between mt-3">
           <StyledText className="text-base">Quantity</StyledText>
           <View className="flex-row items-center">
             <TouchableOpacity
@@ -129,7 +129,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
               className="bg-gray-200 w-10 h-10 rounded-full items-center justify-center"
               disabled={isOutOfStock}
             >
-              <Text className="text-lg">-</Text>
+              <Text className="text-xl">-</Text>
             </TouchableOpacity>
             <StyledText className="text-lg mx-3">{quantity}</StyledText>
             <TouchableOpacity
@@ -137,7 +137,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
               className="bg-gray-200 w-10 h-10 rounded-full items-center justify-center"
               disabled={isOutOfStock}
             >
-              <Text className="text-lg">+</Text>
+              <Text className="text-xl">+</Text>
             </TouchableOpacity>
           </View>
         </View>

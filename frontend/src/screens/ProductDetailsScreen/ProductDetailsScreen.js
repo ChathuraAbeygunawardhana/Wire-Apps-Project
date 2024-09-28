@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Appbar, Button } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import { styled } from 'nativewind';
@@ -19,16 +19,16 @@ const ProductDetailsScreen = ({ route, navigation }) => {
   };
 
   return (
-    <StyledView className="flex-1 px-1 bg-white">
+    <StyledView className="flex-1 bg-white">
       <Appbar.Header className="bg-white h-14">
         <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title="Product Details" className="items-center" />
         <Appbar.Action icon="magnify" onPress={() => {}} />
       </Appbar.Header>
-      <View className="px-3 flex-1">
+      <ScrollView className="px-3 flex-1">
         <StyledImage
           source={{ uri: product.mainImage }}
-          className="w-full h-48 rounded-lg"
+          className="w-full h-64 rounded-lg"
           resizeMode="contain"
         />
         <StyledText className="text-2xl font-bold my-2">
@@ -41,10 +41,6 @@ const ProductDetailsScreen = ({ route, navigation }) => {
           {product.price.amount}{' '}
           {product.price.currency === 'GBP' ? '£' : product.price.currency}
         </StyledText>
-        <StyledText className="text-base text-black">
-          {product.description}
-        </StyledText>
-
         <View className="border border-gray-400 rounded-md mt-5">
           <Picker
             selectedValue={selectedSize}
@@ -58,24 +54,31 @@ const ProductDetailsScreen = ({ route, navigation }) => {
             ))}
           </Picker>
         </View>
-
         {/* quantity section */}
         <View className="flex-row items-center justify-between mt-5">
-          <TouchableOpacity
-            onPress={decreaseQuantity}
-            className="bg-gray-200 p-2 rounded-full"
-          >
-            <Text className="text-lg">-</Text>
-          </TouchableOpacity>
-          <StyledText className="text-lg">{quantity}</StyledText>
-          <TouchableOpacity
-            onPress={increaseQuantity}
-            className="bg-gray-200 p-2 rounded-full"
-          >
-            <Text className="text-lg">+</Text>
-          </TouchableOpacity>
+          <StyledText className="text-base">Quantity</StyledText>
+          <View className="flex-row items-center">
+            <TouchableOpacity
+              onPress={decreaseQuantity}
+              className="bg-gray-200 w-10 h-10 rounded-full items-center justify-center"
+            >
+              <Text className="text-lg">-</Text>
+            </TouchableOpacity>
+            <StyledText className="text-lg mx-3">{quantity}</StyledText>
+            <TouchableOpacity
+              onPress={increaseQuantity}
+              className="bg-gray-200 w-10 h-10 rounded-full items-center justify-center"
+            >
+              <Text className="text-lg">+</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+        <StyledText className="text-base text-black mt-5">
+          {product.description}
+        </StyledText>
+        <View className="mb-5" />
+        {/* Added space at the bottom of the quantity section */}
+      </ScrollView>
       <View className="px-3 pb-5">
         <Button
           mode="contained"

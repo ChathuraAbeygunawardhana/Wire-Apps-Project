@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const AllProductsScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
+  const [isListView, setIsListView] = useState(false);
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 48) / 2;
 
@@ -29,7 +30,7 @@ const AllProductsScreen = ({ navigation }) => {
       .catch((error) => console.error(error));
   }, []);
 
-  const renderItem = ({ item, index }) => {
+  const renderGridItem = ({ item }) => {
     const currencySymbol =
       item.price.currency === 'GBP' ? '£' : item.price.currency;
     return (
@@ -40,11 +41,41 @@ const AllProductsScreen = ({ navigation }) => {
         <View className="flex-1 p-3 bg-gray-100 rounded-lg shadow-md shadow-black/50">
           <Image
             source={{ uri: item.mainImage }}
-            className="w-full h-40 rounded-lg" // Increased height
+            className="w-full h-40 rounded-lg"
             resizeMode="contain"
           />
           <Text
             className="mt-2 text-sm font-bold"
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {item.name}
+          </Text>
+          <Text className="text-xs text-gray-600">{item.brandName}</Text>
+          <Text className="text-xs text-gray-600">
+            {item.price.amount} {currencySymbol}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderListItem = ({ item }) => {
+    const currencySymbol =
+      item.price.currency === 'GBP' ? '£' : item.price.currency;
+    return (
+      <TouchableOpacity
+        onPress={() => navigation.navigate('ProductDetails', { product: item })}
+        className="flex-row mb-4 bg-gray-100 rounded-lg shadow-md shadow-black/50"
+      >
+        <Image
+          source={{ uri: item.mainImage }}
+          className="w-24 h-24 rounded-l-lg"
+          resizeMode="contain"
+        />
+        <View className="flex-1 p-3">
+          <Text
+            className="text-sm font-bold"
             numberOfLines={1}
             ellipsizeMode="tail"
           >
@@ -84,16 +115,26 @@ const AllProductsScreen = ({ navigation }) => {
             <Ionicons name="swap-vertical" size={16} color="black" />
             <Text className="ml-2 text-sm">Price: Low to High</Text>
           </View>
-          <View className="flex-row items-center">
-            <Ionicons name="list" size={20} color="black" />
-          </View>
+          <TouchableOpacity
+            className="flex-row items-center"
+            onPress={() => setIsListView(!isListView)}
+          >
+            <Ionicons
+              name={isListView ? 'grid' : 'list'}
+              size={20}
+              color="black"
+            />
+          </TouchableOpacity>
         </View>
         <FlatList
+          key={isListView ? 'list' : 'grid'}
           data={products}
-          renderItem={renderItem}
+          renderItem={isListView ? renderListItem : renderGridItem}
           keyExtractor={(item) => item.id}
-          numColumns={2}
-          columnWrapperStyle={{ justifyContent: 'space-between' }}
+          numColumns={isListView ? 1 : 2}
+          columnWrapperStyle={
+            isListView ? null : { justifyContent: 'space-between' }
+          }
           contentContainerStyle={{ paddingBottom: 16 }}
         />
       </View>

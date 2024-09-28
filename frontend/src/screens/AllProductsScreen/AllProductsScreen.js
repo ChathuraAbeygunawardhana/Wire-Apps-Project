@@ -14,7 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 const AllProductsScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const screenWidth = Dimensions.get('window').width;
-  const itemWidth = (screenWidth - 48) / 2; // 48 = padding (16 * 2) + gap between items (16)
+  const itemWidth = (screenWidth - 48) / 2;
 
   useEffect(() => {
     fetch(
@@ -40,7 +40,7 @@ const AllProductsScreen = ({ navigation }) => {
         <View className="flex-1 p-3 bg-gray-100 rounded-lg shadow-md shadow-black/50">
           <Image
             source={{ uri: item.mainImage }}
-            style={{ width: '100%', height: 120, borderRadius: 8 }} // Increased height to 120
+            className="w-full h-40 rounded-lg" // Increased height
             resizeMode="contain"
           />
           <Text
@@ -78,11 +78,11 @@ const AllProductsScreen = ({ navigation }) => {
         <View className="flex-row justify-around items-center mb-4 p-2 bg-white rounded-lg shadow-md shadow-black/50">
           <View className="flex-row items-center">
             <Ionicons name="filter" size={16} color="black" />
-            <Text className="ml-2 text-xs">Filter</Text>
+            <Text className="ml-2 text-sm">Filter</Text>
           </View>
           <View className="flex-row items-center">
             <Ionicons name="swap-vertical" size={16} color="black" />
-            <Text className="ml-2 text-xs">Price: Low to High</Text>
+            <Text className="ml-2 text-sm">Price: Low to High</Text>
           </View>
           <View className="flex-row items-center">
             <Ionicons name="list" size={20} color="black" />

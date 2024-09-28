@@ -53,7 +53,7 @@ const AllProductsScreen = ({ navigation }) => {
         <View className="flex-1 p-3 bg-white rounded-lg shadow-md shadow-black/50">
           <Image
             source={{ uri: item.mainImage }}
-            className="w-full h-40 rounded-lg"
+            className="w-full h-32 rounded-lg"
             resizeMode="contain"
           />
           <Text
@@ -78,7 +78,7 @@ const AllProductsScreen = ({ navigation }) => {
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate('ProductDetails', { product: item })}
-        className="flex-row mb-4 bg-white rounded-lg shadow-md shadow-black/50"
+        className="flex-row mb-4 bg-white rounded-lg shadow-md shadow-black/50 px-5"
       >
         <Image
           source={{ uri: item.mainImage }}

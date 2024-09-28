@@ -1,4 +1,11 @@
-import { Text, View, FlatList, SafeAreaView, Image } from 'react-native';
+import {
+  Text,
+  View,
+  FlatList,
+  SafeAreaView,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Appbar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
@@ -23,23 +30,29 @@ const AllProductsScreen = ({ navigation }) => {
     const currencySymbol =
       item.price.currency === 'GBP' ? '£' : item.price.currency;
     return (
-      <View className="flex-1 m-2 p-4 bg-gray-100 rounded-lg shadow-md shadow-black/50 flex-basis-48">
-        <Image
-          source={{ uri: item.mainImage }}
-          className="w-full h-40 rounded-lg"
-        />
-        <Text
-          className="mt-2 text-base font-bold"
-          numberOfLines={1}
-          ellipsizeMode="tail"
-        >
-          {item.name}
-        </Text>
-        <Text className="text-gray-600">{item.brandName}</Text>
-        <Text className="text-gray-600">
-          {item.price.amount} {currencySymbol}
-        </Text>
-      </View>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('ProductDetails', { product: item })}
+        style={{ flex: 1, margin: 2 }}
+      >
+        <View className="flex-1 p-4 bg-gray-100 rounded-lg shadow-md shadow-black/50">
+          <Image
+            source={{ uri: item.mainImage }}
+            style={{ width: '100%', height: 100, borderRadius: 10 }} // Adjusted width and height
+          />
+          <Text
+            className="mt-2 text-base font-bold"
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={{ width: '100%' }}
+          >
+            {item.name}
+          </Text>
+          <Text className="text-gray-600">{item.brandName}</Text>
+          <Text className="text-gray-600">
+            {item.price.amount} {currencySymbol}
+          </Text>
+        </View>
+      </TouchableOpacity>
     );
   };
 
@@ -77,6 +90,7 @@ const AllProductsScreen = ({ navigation }) => {
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           numColumns={2}
+          columnWrapperStyle={{ justifyContent: 'space-between' }}
         />
       </View>
     </SafeAreaView>

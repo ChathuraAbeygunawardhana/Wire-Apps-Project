@@ -29,7 +29,7 @@ const AllProductsStack = () => (
       component={ProductDetailsScreen}
       options={{
         headerShown: false,
-        ...TransitionPresets.ScaleFromCenterAndroid, // Apply the scale from center animation
+        ...TransitionPresets.ScaleFromCenterAndroid,
       }}
     />
   </Stack.Navigator>

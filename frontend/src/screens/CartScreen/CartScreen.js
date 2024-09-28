@@ -105,35 +105,35 @@ const CartScreen = ({ navigation }) => {
           <Text>Your cart is empty</Text>
         </View>
       ) : (
-        <>
-          <FlatList
-            data={cartItems}
-            renderItem={renderItem}
-            keyExtractor={(item) => `${item.id}-${item.size}`}
-            className="px-2"
-          />
-          <View className="p-4 border-t border-gray-200 flex-row justify-between">
-            <Text className="text-xl">Total Amount:</Text>
-            <Text className="text-xl font-bold">
-              {calculateTotal()}
-              {cartItems[0].price.currency === 'GBP'
-                ? '£'
-                : cartItems[0].price.currency}
-            </Text>
-          </View>
-          <View className="px-3 pb-5">
-            <Button
-              mode="contained"
-              onPress={() => {
-                console.log('Checkout button pressed');
-              }}
-              className="bg-black text-white rounded-full w-full text-xl py-1"
-            >
-              Checkout
-            </Button>
-          </View>
-        </>
+        <FlatList
+          data={cartItems}
+          renderItem={renderItem}
+          keyExtractor={(item) => `${item.id}-${item.size}`}
+          className="px-2"
+        />
       )}
+      <View className="p-4 border-t border-gray-200 flex-row justify-between">
+        <Text className="text-xl">Total Amount:</Text>
+        <Text className="text-xl font-bold">
+          {calculateTotal()}
+          {cartItems.length > 0 && cartItems[0].price.currency === 'GBP'
+            ? '£'
+            : cartItems.length > 0
+            ? cartItems[0].price.currency
+            : ''}
+        </Text>
+      </View>
+      <View className="px-3 pb-5">
+        <Button
+          mode="contained"
+          onPress={() => {
+            console.log('Checkout button pressed');
+          }}
+          className="bg-black text-white rounded-full w-full text-xl py-1"
+        >
+          Checkout
+        </Button>
+      </View>
     </View>
   );
 };

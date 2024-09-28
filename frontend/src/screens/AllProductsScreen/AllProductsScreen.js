@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   View,
@@ -7,8 +8,9 @@ import {
   TouchableOpacity,
   Dimensions,
   ActivityIndicator,
+  Modal,
+  TouchableWithoutFeedback,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
 import { Appbar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -17,6 +19,8 @@ const AllProductsScreen = ({ navigation }) => {
   const [isListView, setIsListView] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedSortOption, setSelectedSortOption] = useState('Sort');
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 48) / 2;
 
@@ -41,6 +45,27 @@ const AllProductsScreen = ({ navigation }) => {
         setIsLoading(false);
       });
   }, []);
+
+  const sortProducts = (order) => {
+    const sortedProducts = [...products].sort((a, b) => {
+      if (order === 'lowToHigh') {
+        return a.price.amount - b.price.amount;
+      } else if (order === 'highToLow') {
+        return b.price.amount - a.price.amount;
+      } else if (order === 'newest') {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      }
+    });
+    setProducts(sortedProducts);
+    setSelectedSortOption(
+      order === 'lowToHigh'
+        ? 'Price: Low to High'
+        : order === 'highToLow'
+        ? 'Price: High to Low'
+        : 'Newest'
+    );
+    setIsModalVisible(false);
+  };
 
   const renderGridItem = ({ item }) => {
     const currencySymbol =
@@ -110,15 +135,18 @@ const AllProductsScreen = ({ navigation }) => {
         <Appbar.Action icon="magnify" onPress={() => {}} />
       </Appbar.Header>
       <View className="flex-1 mx-3">
-        <View className="flex-row justify-around items-center mb-3 mt-3 p-2 bg-white rounded-lg shadow-md shadow-black/50">
-          <View className="flex-row items-center">
+        <View className="flex-row justify-between items-center mb-3 mt-3 p-2 bg-white rounded-lg shadow-md shadow-black/50">
+          <TouchableOpacity className="flex-row items-center">
             <Ionicons name="filter" size={16} color="black" />
             <Text className="ml-2 text-sm">Filter</Text>
-          </View>
-          <View className="flex-row items-center">
+          </TouchableOpacity>
+          <TouchableOpacity
+            className="flex-row items-center"
+            onPress={() => setIsModalVisible(true)}
+          >
             <Ionicons name="swap-vertical" size={16} color="black" />
-            <Text className="ml-2 text-sm">Price: Low to High</Text>
-          </View>
+            <Text className="ml-2 text-sm">{selectedSortOption}</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             className="flex-row items-center"
             onPress={() => setIsListView(!isListView)}
@@ -153,6 +181,39 @@ const AllProductsScreen = ({ navigation }) => {
           />
         )}
       </View>
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setIsModalVisible(false)}>
+          <View className="flex-1 justify-end">
+            <View className="absolute top-0 left-0 right-0 bottom-0 bg-gray-800 opacity-50" />
+            <View className="bg-white p-4 rounded-t-xl border border-gray-300">
+              <Text className="text-lg font-bold mb-4">Sort By</Text>
+              <TouchableOpacity
+                className="p-2"
+                onPress={() => sortProducts('lowToHigh')}
+              >
+                <Text className="text-sm">Price: Low to High</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="p-2"
+                onPress={() => sortProducts('highToLow')}
+              >
+                <Text className="text-sm">Price: High to Low</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="p-2"
+                onPress={() => sortProducts('newest')}
+              >
+                <Text className="text-sm">Newest</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </SafeAreaView>
   );
 };

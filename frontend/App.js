@@ -13,6 +13,7 @@ import AllProductsScreen from './src/screens/AllProductsScreen/AllProductsScreen
 import ProductDetailsScreen from './src/screens/ProductDetailsScreen/ProductDetailsScreen';
 import CartScreen from './src/screens/CartScreen/CartScreen';
 import ProfileScreen from './src/screens/ProfileScreen/ProfileScreen';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();

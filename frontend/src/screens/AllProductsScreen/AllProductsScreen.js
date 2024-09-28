@@ -16,11 +16,21 @@ import { Ionicons } from '@expo/vector-icons';
 
 const AllProductsScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [isListView, setIsListView] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isSortModalVisible, setIsSortModalVisible] = useState(false);
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [selectedSortOption, setSelectedSortOption] = useState('Sort');
+  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [selectedColours, setSelectedColours] = useState([]);
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [selectedBrands, setSelectedBrands] = useState([]);
+  const [selectedColour, setSelectedColour] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedBrand, setSelectedBrand] = useState(null);
+
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 48) / 2;
 
@@ -34,6 +44,7 @@ const AllProductsScreen = ({ navigation }) => {
       .then((data) => {
         if (data.result === 'success') {
           setProducts(data.data);
+          setFilteredProducts(data.data);
         } else {
           setHasError(true);
         }
@@ -43,11 +54,12 @@ const AllProductsScreen = ({ navigation }) => {
       })
       .catch((error) => {
         setIsLoading(false);
+        setHasError(true);
       });
   }, []);
 
   const sortProducts = (order) => {
-    const sortedProducts = [...products].sort((a, b) => {
+    const sortedProducts = [...filteredProducts].sort((a, b) => {
       if (order === 'lowToHigh') {
         return a.price.amount - b.price.amount;
       } else if (order === 'highToLow') {
@@ -56,7 +68,7 @@ const AllProductsScreen = ({ navigation }) => {
         return new Date(b.createdAt) - new Date(a.createdAt);
       }
     });
-    setProducts(sortedProducts);
+    setFilteredProducts(sortedProducts);
     setSelectedSortOption(
       order === 'lowToHigh'
         ? 'Price: Low to High'
@@ -64,7 +76,38 @@ const AllProductsScreen = ({ navigation }) => {
         ? 'Price: High to Low'
         : 'Newest'
     );
-    setIsModalVisible(false);
+    setIsSortModalVisible(false);
+  };
+
+  const applyFilters = () => {
+    let filtered = products.filter((product) => {
+      const price = parseFloat(product.price.amount);
+      const inPriceRange = price >= priceRange[0] && price <= priceRange[1];
+
+      const colourMatch =
+        !selectedColour ||
+        (product.colour &&
+          product.colour.toLowerCase() === selectedColour.toLowerCase());
+      const sizeMatch =
+        !selectedSize ||
+        (product.sizes && product.sizes.includes(selectedSize));
+      const brandMatch =
+        !selectedBrand ||
+        (product.brandName && product.brandName === selectedBrand);
+
+      return inPriceRange && colourMatch && sizeMatch && brandMatch;
+    });
+
+    setFilteredProducts(filtered);
+    setIsFilterModalVisible(false);
+  };
+  const discardFilters = () => {
+    setSelectedColour(null);
+    setSelectedSize(null);
+    setSelectedBrand(null);
+    setPriceRange([0, 1000]);
+    setFilteredProducts(products);
+    setIsFilterModalVisible(false);
   };
 
   const renderGridItem = ({ item }) => {
@@ -127,6 +170,148 @@ const AllProductsScreen = ({ navigation }) => {
     );
   };
 
+  const renderSortModal = () => (
+    <Modal
+      visible={isSortModalVisible}
+      transparent={true}
+      animationType="slide"
+      onRequestClose={() => setIsSortModalVisible(false)}
+    >
+      <TouchableWithoutFeedback onPress={() => setIsSortModalVisible(false)}>
+        <View className="flex-1 justify-end">
+          <View className="absolute top-0 left-0 right-0 bottom-0 bg-gray-800 opacity-50" />
+          <View className="bg-white p-4 rounded-t-xl border border-gray-300">
+            <Text className="text-lg font-bold mb-4">Sort By</Text>
+            <TouchableOpacity
+              className="p-2"
+              onPress={() => sortProducts('lowToHigh')}
+            >
+              <Text className="text-sm">Price: Low to High</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="p-2"
+              onPress={() => sortProducts('highToLow')}
+            >
+              <Text className="text-sm">Price: High to Low</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="p-2"
+              onPress={() => sortProducts('newest')}
+            >
+              <Text className="text-sm">Newest</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </Modal>
+  );
+
+  const renderFilterModal = () => (
+    <Modal
+      visible={isFilterModalVisible}
+      transparent={true}
+      animationType="slide"
+      onRequestClose={() => setIsFilterModalVisible(false)}
+    >
+      <TouchableWithoutFeedback onPress={() => setIsFilterModalVisible(false)}>
+        <View className="flex-1 justify-end">
+          <View className="absolute top-0 left-0 right-0 bottom-0 bg-gray-800 opacity-50" />
+          <View className="bg-white p-4 rounded-t-xl border border-gray-300">
+            <Text className="text-lg font-bold mb-4">Filter</Text>
+
+            <Text className="text-sm font-semibold mb-2">Price Range</Text>
+            <Text className="text-sm mb-4">
+              ${priceRange[0].toFixed(2)} - ${priceRange[1].toFixed(2)}
+            </Text>
+
+            <Text className="text-sm font-semibold mb-2">Colours</Text>
+            <View className="flex-row mb-4">
+              {[
+                'Blue',
+                'Black',
+                'Multicoloured',
+                'Purple',
+                'Green',
+                'Yellow',
+              ].map((colour) => (
+                <TouchableOpacity
+                  key={colour}
+                  style={{
+                    width: 30,
+                    height: 30,
+                    borderRadius: 15,
+                    backgroundColor: colour.toLowerCase(),
+                    marginHorizontal: 5,
+                    borderWidth: selectedColour === colour ? 2 : 0,
+                    borderColor: 'black',
+                  }}
+                  onPress={() =>
+                    setSelectedColour(selectedColour === colour ? null : colour)
+                  }
+                />
+              ))}
+            </View>
+
+            <Text className="text-sm font-semibold mb-2 mt-4">Sizes</Text>
+            <View className="flex-row flex-wrap">
+              {['S', 'M', 'L', 'XL', 'XXL'].map((size) => (
+                <TouchableOpacity
+                  key={size}
+                  style={{
+                    padding: 10,
+                    margin: 5,
+                    backgroundColor: selectedSize === size ? 'blue' : 'gray',
+                    borderRadius: 5,
+                  }}
+                  onPress={() =>
+                    setSelectedSize(selectedSize === size ? null : size)
+                  }
+                >
+                  <Text style={{ color: 'white' }}>{size}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <Text className="text-sm font-semibold mb-2 mt-4">Brands</Text>
+            <View className="flex-row flex-wrap">
+              {['Nike', 'Adidas', 'Puma', 'Reebok'].map((brand) => (
+                <TouchableOpacity
+                  key={brand}
+                  style={{
+                    padding: 10,
+                    margin: 5,
+                    backgroundColor: selectedBrand === brand ? 'blue' : 'gray',
+                    borderRadius: 5,
+                  }}
+                  onPress={() =>
+                    setSelectedBrand(selectedBrand === brand ? null : brand)
+                  }
+                >
+                  <Text style={{ color: 'white' }}>{brand}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <View className="flex-row justify-between mt-4">
+              <TouchableOpacity
+                className="bg-gray-200 px-4 py-2 rounded"
+                onPress={discardFilters}
+              >
+                <Text>Discard</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="bg-blue-500 px-4 py-2 rounded"
+                onPress={applyFilters}
+              >
+                <Text className="text-white">Apply</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </Modal>
+  );
+
   return (
     <SafeAreaView className="flex-1 bg-gray-200">
       <Appbar.Header className="bg-white">
@@ -136,13 +321,16 @@ const AllProductsScreen = ({ navigation }) => {
       </Appbar.Header>
       <View className="flex-1 mx-3">
         <View className="flex-row justify-between items-center mb-3 mt-3 p-2 bg-white rounded-lg shadow-md shadow-black/50">
-          <TouchableOpacity className="flex-row items-center">
+          <TouchableOpacity
+            className="flex-row items-center"
+            onPress={() => setIsFilterModalVisible(true)}
+          >
             <Ionicons name="filter" size={16} color="black" />
             <Text className="ml-2 text-sm">Filter</Text>
           </TouchableOpacity>
           <TouchableOpacity
             className="flex-row items-center"
-            onPress={() => setIsModalVisible(true)}
+            onPress={() => setIsSortModalVisible(true)}
           >
             <Ionicons name="swap-vertical" size={16} color="black" />
             <Text className="ml-2 text-sm">{selectedSortOption}</Text>
@@ -170,7 +358,7 @@ const AllProductsScreen = ({ navigation }) => {
         ) : (
           <FlatList
             key={isListView ? 'list' : 'grid'}
-            data={products}
+            data={filteredProducts}
             renderItem={isListView ? renderListItem : renderGridItem}
             keyExtractor={(item) => item.id}
             numColumns={isListView ? 1 : 2}
@@ -181,39 +369,8 @@ const AllProductsScreen = ({ navigation }) => {
           />
         )}
       </View>
-      <Modal
-        visible={isModalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setIsModalVisible(false)}
-      >
-        <TouchableWithoutFeedback onPress={() => setIsModalVisible(false)}>
-          <View className="flex-1 justify-end">
-            <View className="absolute top-0 left-0 right-0 bottom-0 bg-gray-800 opacity-50" />
-            <View className="bg-white p-4 rounded-t-xl border border-gray-300">
-              <Text className="text-lg font-bold mb-4">Sort By</Text>
-              <TouchableOpacity
-                className="p-2"
-                onPress={() => sortProducts('lowToHigh')}
-              >
-                <Text className="text-sm">Price: Low to High</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="p-2"
-                onPress={() => sortProducts('highToLow')}
-              >
-                <Text className="text-sm">Price: High to Low</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="p-2"
-                onPress={() => sortProducts('newest')}
-              >
-                <Text className="text-sm">Newest</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
+      {renderSortModal()}
+      {renderFilterModal()}
     </SafeAreaView>
   );
 };

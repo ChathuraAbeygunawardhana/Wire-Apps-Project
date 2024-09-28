@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from 'react-native';
 import { Appbar, Button } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import { styled } from 'nativewind';
@@ -24,6 +31,14 @@ const ProductDetailsScreen = ({ route, navigation }) => {
   const thirdLine = productNameWords.slice(7).join(' ');
 
   const isOutOfStock = product.stockStatus !== 'IN STOCK';
+
+  const handleSizeChange = (itemValue) => {
+    if (isOutOfStock) {
+      Alert.alert('Product is out of stock');
+    } else {
+      setSelectedSize(itemValue);
+    }
+  };
 
   return (
     <StyledView className="flex-1 bg-white ">
@@ -72,7 +87,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         <View className="border border-gray-400 rounded-md mt-5">
           <Picker
             selectedValue={selectedSize}
-            onValueChange={(itemValue) => setSelectedSize(itemValue)}
+            onValueChange={handleSizeChange}
             className="h-12 justify-center items-center"
             itemStyle={{ textAlignVertical: 'center' }}
             enabled={!isOutOfStock}
@@ -117,7 +132,10 @@ const ProductDetailsScreen = ({ route, navigation }) => {
             </StyledText>
           </View>
         )}
-        <StyledText className="text-base text-black mt-5">
+        <StyledText
+          className="text-base text-black mt-5"
+          style={{ textAlign: 'justify' }}
+        >
           {product.description}
         </StyledText>
         <View className="mb-5" />

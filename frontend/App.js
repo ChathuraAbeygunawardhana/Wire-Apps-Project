@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+  createStackNavigator,
+  TransitionPresets,
+} from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { Provider } from 'react-redux';
@@ -24,7 +27,10 @@ const AllProductsStack = () => (
     <Stack.Screen
       name="ProductDetails"
       component={ProductDetailsScreen}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: false,
+        ...TransitionPresets.SlideFromRightIOS, // Apply the sliding animation
+      }}
     />
   </Stack.Navigator>
 );

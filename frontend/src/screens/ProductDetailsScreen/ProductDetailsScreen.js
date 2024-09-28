@@ -10,6 +10,8 @@ import {
 import { Appbar, Button } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import { styled } from 'nativewind';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../../redux/cartSlice';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -19,6 +21,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
   const { product } = route.params;
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const dispatch = useDispatch();
 
   const increaseQuantity = () => setQuantity(quantity + 1);
   const decreaseQuantity = () => {
@@ -40,8 +43,27 @@ const ProductDetailsScreen = ({ route, navigation }) => {
     }
   };
 
+  const handleAddToCart = () => {
+    if (!selectedSize) {
+      Alert.alert('Please select a size');
+      return;
+    }
+
+    dispatch(
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        size: selectedSize,
+        quantity: quantity,
+      })
+    );
+
+    Alert.alert('Success', 'Item added to cart');
+  };
+
   return (
-    <StyledView className="flex-1 bg-white ">
+    <StyledView className="flex-1 bg-white">
       <Appbar.Header className="bg-white h-14">
         <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title="Product Details" className="items-center" />
@@ -98,7 +120,6 @@ const ProductDetailsScreen = ({ route, navigation }) => {
             ))}
           </Picker>
         </View>
-        {/* quantity section */}
         <View className="flex-row items-center justify-between mt-5">
           <StyledText className="text-base">Quantity</StyledText>
           <View className="flex-row items-center">
@@ -119,7 +140,6 @@ const ProductDetailsScreen = ({ route, navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-        {/* selected size and total price section */}
         {selectedSize && (
           <View className="flex-row justify-between items-center mt-5">
             <StyledText className="text-base">
@@ -143,7 +163,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
       <View className="px-3 pb-5">
         <Button
           mode="contained"
-          onPress={() => {}}
+          onPress={handleAddToCart}
           className="bg-black text-white rounded-full w-full text-xl py-1"
           disabled={isOutOfStock}
         >

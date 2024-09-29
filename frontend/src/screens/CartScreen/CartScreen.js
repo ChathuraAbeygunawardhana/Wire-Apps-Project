@@ -1,18 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Image } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart, updateQuantity } from '../../redux/cartSlice';
 import { Appbar, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import CustomAlert from './CustomAlert';
 
 const CartScreen = ({ navigation }) => {
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const renderItem = ({ item }) => {
     const words = item.name.split(' ');
     const firstLine = words.slice(0, 5).join(' ');
     const secondLine = words.slice(5).join(' ');
+
+    const handleDelete = () => {
+      setSelectedItem(item);
+      setAlertVisible(true);
+    };
 
     return (
       <View className="flex-row justify-between items-center p-4 border-b border-gray-200 bg-white shadow-lg rounded-lg mt-3 relative">
@@ -78,9 +86,7 @@ const CartScreen = ({ navigation }) => {
           </View>
         </View>
         <TouchableOpacity
-          onPress={() =>
-            dispatch(removeFromCart({ id: item.id, size: item.size }))
-          }
+          onPress={handleDelete}
           className="absolute top-4 right-3"
         >
           <Icon name="delete" size={24} color="black" />
@@ -93,6 +99,10 @@ const CartScreen = ({ navigation }) => {
     return cartItems
       .reduce((total, item) => total + item.price.amount * item.quantity, 0)
       .toFixed(2);
+  };
+  const handleConfirmDelete = () => {
+    dispatch(removeFromCart({ id: selectedItem.id, size: selectedItem.size }));
+    setAlertVisible(false);
   };
 
   return (
@@ -134,6 +144,13 @@ const CartScreen = ({ navigation }) => {
           Checkout
         </Button>
       </View>
+      <CustomAlert
+        visible={alertVisible}
+        title="Remove Item"
+        message="Are you sure you want to remove this item from the cart?"
+        onCancel={() => setAlertVisible(false)}
+        onConfirm={handleConfirmDelete}
+      />
     </View>
   );
 };

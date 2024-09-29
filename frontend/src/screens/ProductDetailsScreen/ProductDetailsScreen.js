@@ -96,7 +96,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         <Appbar.Header className="bg-white h-14">
           <Appbar.BackAction onPress={() => navigation.goBack()} />
           <Appbar.Content
-            title="Product Details       "
+            title="Product Details          "
             className="items-center"
           />
         </Appbar.Header>

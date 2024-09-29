@@ -12,8 +12,10 @@ import renderGridItem from '../../components/renderGridItem';
 import renderListItem from '../../components/renderListItem';
 import Header from '../../components/Header';
 import FilterSortBar from '../../components/FilterSortBar';
-import SortModal from '../../components/SortModal';
-import FilterModal from '../../components/FilterModal';
+import SortModal from '../../components/modals/SortModal';
+import FilterModal from '../../components/modals/FilterModal';
+import LoadingComponent from '../../components/LoadingComponent';
+import ErrorView from '../../components/ErrorView';
 import {
   fetchProducts,
   sortProducts,
@@ -70,14 +72,9 @@ const AllProductsScreen = ({ navigation }) => {
           setIsListView={setIsListView}
         />
         {isLoading ? (
-          <View style={styles.loadingView}>
-            <ActivityIndicator size="large" color="#4e4e68" />
-            <Text style={styles.loadingText}>Loading products</Text>
-          </View>
+          <LoadingComponent />
         ) : hasError ? (
-          <View style={styles.errorView}>
-            <Text style={styles.errorText}>Couldn't find any products</Text>
-          </View>
+          <ErrorView />
         ) : filteredProducts.length === 0 ? (
           <View style={styles.noProductsView}>
             <Text style={styles.noProductsText}>
@@ -158,23 +155,6 @@ const styles = StyleSheet.create({
   mainView: {
     flex: 1,
     marginHorizontal: 12,
-  },
-  loadingView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 8,
-    fontSize: 14,
-  },
-  errorView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorText: {
-    fontSize: 14,
   },
   noProductsView: {
     flex: 1,

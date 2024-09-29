@@ -11,6 +11,7 @@ import {
   Modal,
   TouchableWithoutFeedback,
   TextInput,
+  Switch,
 } from 'react-native';
 import { Appbar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
@@ -34,6 +35,7 @@ const AllProductsScreen = ({ navigation }) => {
   const [selectedBrand, setSelectedBrand] = useState(null);
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isInStock, setIsInStock] = useState(false);
 
   const searchInputRef = useRef(null);
 
@@ -100,8 +102,11 @@ const AllProductsScreen = ({ navigation }) => {
       const brandMatch =
         !selectedBrand ||
         (product.brandName && product.brandName === selectedBrand);
+      const inStockMatch = !isInStock || product.stockStatus === 'IN STOCK';
 
-      return inPriceRange && colourMatch && sizeMatch && brandMatch;
+      return (
+        inPriceRange && colourMatch && sizeMatch && brandMatch && inStockMatch
+      );
     });
 
     setFilteredProducts(filtered);
@@ -113,40 +118,57 @@ const AllProductsScreen = ({ navigation }) => {
     setSelectedSize(null);
     setSelectedBrand(null);
     setPriceRange([0, 1000]);
+    setIsInStock(false);
     setFilteredProducts(products);
     setIsFilterModalVisible(false);
   };
 
-  const renderGridItem = ({ item }) => {
+  const renderGridItem = ({ item, index }) => {
     const currencySymbol =
       item.price.currency === 'GBP' ? '£' : item.price.currency;
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate('ProductDetails', { product: item })}
-        style={{ width: itemWidth, marginBottom: 16 }}
+        style={{
+          width: itemWidth,
+          marginBottom: 16,
+          marginLeft: index % 2 === 0 ? 0 : 22,
+        }}
       >
-        <View className="flex-1 p-3 bg-white rounded-lg shadow-md shadow-black/50">
+        <View
+          style={{
+            flex: 1,
+            padding: 12,
+            backgroundColor: 'white',
+            borderRadius: 8,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5,
+          }}
+        >
           <Image
             source={{ uri: item.mainImage }}
-            className="w-full h-32 rounded-lg"
+            style={{ width: '100%', height: 120, borderRadius: 8 }}
             resizeMode="contain"
           />
           <Text
-            className="mt-2 text-sm font-bold"
+            style={{ marginTop: 8, fontSize: 14, fontWeight: 'bold' }}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
             {item.name}
           </Text>
-          <Text className="text-xs text-gray-600">{item.brandName}</Text>
-          <Text className="text-xs text-gray-600">
-            {item.price.amount} {currencySymbol}
+          <Text style={{ fontSize: 12, color: '#666' }}>{item.brandName}</Text>
+          <Text style={{ fontSize: 12, color: '#666' }}>
+            {currencySymbol}
+            {item.price.amount}
           </Text>
         </View>
       </TouchableOpacity>
     );
   };
-
   const renderListItem = ({ item }) => {
     const currencySymbol =
       item.price.currency === 'GBP' ? '£' : item.price.currency;
@@ -225,7 +247,6 @@ const AllProductsScreen = ({ navigation }) => {
           <View className="absolute top-0 left-0 right-0 bottom-0 bg-gray-800 opacity-50" />
           <View className="bg-white p-4 rounded-t-xl border border-gray-300">
             <Text className="text-lg font-bold mb-4 text-center">Filter</Text>
-
             <Text className="text-sm font-semibold mb-2">Price Range</Text>
             <View className="flex-row items-center mb-4">
               <Text className="text-sm flex-1">
@@ -233,7 +254,7 @@ const AllProductsScreen = ({ navigation }) => {
               </Text>
               <MultiSlider
                 values={priceRange}
-                sliderLength={200} // Adjust the length as needed
+                sliderLength={180}
                 onValuesChange={(values) => setPriceRange(values)}
                 min={0}
                 max={100}
@@ -249,7 +270,6 @@ const AllProductsScreen = ({ navigation }) => {
                 style={{ alignSelf: 'flex-end' }}
               />
             </View>
-
             <Text className="text-sm font-semibold mb-2 mt-2">Colours</Text>
             <View className="flex-row flex-wrap justify-between mb-2">
               {[
@@ -297,7 +317,6 @@ const AllProductsScreen = ({ navigation }) => {
                 </TouchableOpacity>
               ))}
             </View>
-
             <Text className="text-sm font-semibold mb-2 mt-2">Brands</Text>
             <View className="flex-row flex-wrap justify-between">
               {['Nike', 'Adidas', 'Puma', 'Reebok'].map((brand) => (
@@ -320,7 +339,24 @@ const AllProductsScreen = ({ navigation }) => {
                 </TouchableOpacity>
               ))}
             </View>
-
+            <Text className="text-sm font-semibold mb-2 mt-2">In Stock</Text>
+            <View className="flex-row items-center mb-4">
+              <Switch
+                value={isInStock}
+                onValueChange={(value) => setIsInStock(value)}
+                trackColor={{ false: '#767577', true: '#908f91' }}
+                thumbColor={isInStock ? '#000' : '#f4f3f4'}
+              />
+              <Text className="ml-2 text-sm">{isInStock ? 'Yes' : 'No'}</Text>
+            </View>
+            <View
+              style={{
+                height: 1,
+                backgroundColor: '#e0e0e0',
+                marginVertical: 10,
+              }}
+            />
+            {/* Divider */}
             <View className="flex-row justify-between mt-4">
               <TouchableOpacity
                 className="bg-white border border-black px-4 py-2 rounded-full"
@@ -365,7 +401,7 @@ const AllProductsScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-200">
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f0f0f0' }}>
       <Appbar.Header className="bg-white">
         <Appbar.BackAction onPress={() => navigation.goBack()} />
         {!isSearchBarVisible && (
@@ -427,17 +463,23 @@ const AllProductsScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         {isLoading ? (
-          <View className="flex-1 justify-center items-center">
+          <View
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+          >
             <ActivityIndicator size="large" color="#4e4e68" />
-            <Text className="mt-2 text-sm">Loading products</Text>
+            <Text style={{ marginTop: 8, fontSize: 14 }}>Loading products</Text>
           </View>
         ) : hasError ? (
-          <View className="flex-1 justify-center items-center">
-            <Text className="mt-2 text-sm">Couldn't find any products</Text>
+          <View
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+          >
+            <Text style={{ fontSize: 14 }}>Couldn't find any products</Text>
           </View>
         ) : filteredProducts.length === 0 ? (
-          <View className="flex-1 justify-center items-center">
-            <Text className="mt-2 text-sm">
+          <View
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+          >
+            <Text style={{ fontSize: 14 }}>
               No products were found matching your selection
             </Text>
           </View>
@@ -448,9 +490,6 @@ const AllProductsScreen = ({ navigation }) => {
             renderItem={isListView ? renderListItem : renderGridItem}
             keyExtractor={(item) => item.id}
             numColumns={isListView ? 1 : 2}
-            columnWrapperStyle={
-              isListView ? null : { justifyContent: 'space-between' }
-            }
             contentContainerStyle={{ paddingBottom: 16 }}
           />
         )}

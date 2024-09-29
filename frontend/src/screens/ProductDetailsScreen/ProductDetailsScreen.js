@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-} from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Appbar, Button } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import { styled } from 'nativewind';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../redux/cartSlice';
 import { Ionicons } from '@expo/vector-icons';
+import {
+  ALERT_TYPE,
+  Dialog,
+  AlertNotificationRoot,
+} from 'react-native-alert-notification';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -38,7 +36,16 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
   const handleSizeChange = (itemValue) => {
     if (isOutOfStock) {
-      Alert.alert('Product is out of stock');
+      Dialog.show({
+        type: ALERT_TYPE.WARNING,
+        title: 'Warning',
+        textBody: 'Product is out of stock',
+        button: 'OK',
+        titleStyle: { color: 'black' },
+        textBodyStyle: { color: 'black' },
+        buttonStyle: { backgroundColor: 'black' },
+        buttonTextStyle: { color: 'white' },
+      });
     } else {
       setSelectedSize(itemValue);
     }
@@ -46,7 +53,16 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
   const handleAddToCart = () => {
     if (!selectedSize) {
-      Alert.alert('Please select a size');
+      Dialog.show({
+        type: ALERT_TYPE.WARNING,
+        title: 'Size not selected',
+        textBody: 'Please select a size',
+        button: 'OK',
+        titleStyle: { color: 'black' },
+        textBodyStyle: { color: 'black' },
+        buttonStyle: { backgroundColor: 'black' },
+        buttonTextStyle: { color: 'white' },
+      });
       return;
     }
 
@@ -62,115 +78,135 @@ const ProductDetailsScreen = ({ route, navigation }) => {
       })
     );
 
-    Alert.alert('Success', 'Item added to cart');
+    Dialog.show({
+      type: ALERT_TYPE.SUCCESS,
+      title: 'Success',
+      textBody: 'Item added to cart',
+      button: 'OK',
+      titleStyle: { color: 'black' },
+      textBodyStyle: { color: 'black' },
+      buttonStyle: { backgroundColor: 'black' },
+      buttonTextStyle: { color: 'white' },
+    });
   };
 
   return (
-    <StyledView className="flex-1 bg-white">
-      <Appbar.Header className="bg-white h-14">
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Product Details" className="items-center" />
-      </Appbar.Header>
-      <ScrollView className="px-4 flex-1">
-        <StyledImage
-          source={{ uri: product.mainImage }}
-          className="w-full h-64 rounded-lg"
-          resizeMode="contain"
-        />
-        <View className="flex-row justify-between items-start my-2">
-          <View>
-            <StyledText className="text-xl font-bold">{firstLine}</StyledText>
-            {secondLine && (
-              <StyledText className="text-xl font-bold">
-                {secondLine}
-              </StyledText>
-            )}
-            {thirdLine && (
-              <StyledText className="text-xl font-bold">{thirdLine}</StyledText>
-            )}
-          </View>
-          <StyledText className="text-xl font-bold text-black">
-            {product.price.amount}
-            {product.price.currency === 'GBP' ? '£' : product.price.currency}
-          </StyledText>
-        </View>
-        <View className="flex-row justify-between items-center">
-          <StyledText className="text-lg text-gray-500">
-            {product.brandName} - {product.colour}
-          </StyledText>
-          <StyledText
-            className={`text-lg ${
-              isOutOfStock ? 'text-red-500' : 'text-gray-500'
-            }`}
-          >
-            {product.stockStatus.toLowerCase()}
-          </StyledText>
-        </View>
-        <View className="border border-gray-400 rounded-md mt-5">
-          <Picker
-            selectedValue={selectedSize}
-            onValueChange={handleSizeChange}
-            className="h-12 justify-center items-center"
-            itemStyle={{ textAlignVertical: 'center' }}
-            enabled={!isOutOfStock}
-          >
-            {selectedSize === null && <Picker.Item label="size" value={null} />}
-            {product.sizes.map((size) => (
-              <Picker.Item key={size} label={size} value={size} />
-            ))}
-          </Picker>
-        </View>
-        <View className="flex-row items-center justify-between mt-3">
-          <StyledText className="text-base">Quantity</StyledText>
-          <View className="flex-row items-center">
-            <TouchableOpacity
-              onPress={decreaseQuantity}
-              className="bg-gray-200 w-8 h-8 rounded-full items-center justify-center"
-              disabled={isOutOfStock}
-            >
-              <Ionicons name="remove" size={15} color="black" />
-            </TouchableOpacity>
-            <StyledText className="text-base mx-3">{quantity}</StyledText>
-            <TouchableOpacity
-              onPress={increaseQuantity}
-              className="bg-gray-200 w-8 h-8 rounded-full items-center justify-center"
-              disabled={isOutOfStock}
-            >
-              <Ionicons name="add" size={15} color="black" />
-            </TouchableOpacity>
-          </View>
-        </View>
-        {selectedSize && (
-          <View className="flex-row justify-between items-center mt-5">
-            <StyledText className="text-base">
-              {`Size ${selectedSize} x ${quantity}`}
+    <AlertNotificationRoot>
+      <StyledView className="flex-1 bg-white">
+        <Appbar.Header className="bg-white h-14">
+          <Appbar.BackAction onPress={() => navigation.goBack()} />
+          <Appbar.Content
+            title="Product Details       "
+            className="items-center"
+          />
+        </Appbar.Header>
+        <ScrollView className="px-4 flex-1">
+          <StyledImage
+            source={{ uri: product.mainImage }}
+            className="w-full h-64 rounded-lg"
+            resizeMode="contain"
+          />
+          <View className="flex-row justify-between items-start my-2">
+            <View>
+              <StyledText className="text-xl font-bold">{firstLine}</StyledText>
+              {secondLine && (
+                <StyledText className="text-xl font-bold">
+                  {secondLine}
+                </StyledText>
+              )}
+              {thirdLine && (
+                <StyledText className="text-xl font-bold">
+                  {thirdLine}
+                </StyledText>
+              )}
+            </View>
+            <StyledText className="text-xl font-bold text-black">
+              {product.price.amount}
+              {product.price.currency === 'GBP' ? '£' : product.price.currency}
             </StyledText>
-            <StyledText className="text-base font-bold">
-              {`${(product.price.amount * quantity).toFixed(2)} ${
-                product.price.currency === 'GBP' ? '£' : product.price.currency
+          </View>
+          <View className="flex-row justify-between items-center">
+            <StyledText className="text-lg text-gray-500">
+              {product.brandName} - {product.colour}
+            </StyledText>
+            <StyledText
+              className={`text-lg ${
+                isOutOfStock ? 'text-red-500' : 'text-gray-500'
               }`}
+            >
+              {product.stockStatus.toLowerCase()}
             </StyledText>
           </View>
-        )}
-        <StyledText
-          className="text-base text-black mt-5"
-          style={{ textAlign: 'justify' }}
-        >
-          {product.description}
-        </StyledText>
-        <View className="mb-5" />
-      </ScrollView>
-      <View className="px-3 pb-5">
-        <Button
-          mode="contained"
-          onPress={handleAddToCart}
-          className="bg-black text-white rounded-full w-full text-xl py-1"
-          disabled={isOutOfStock}
-        >
-          Add to Cart
-        </Button>
-      </View>
-    </StyledView>
+          <View className="border border-gray-400 rounded-md mt-5">
+            <Picker
+              selectedValue={selectedSize}
+              onValueChange={handleSizeChange}
+              className="h-12 justify-center items-center"
+              itemStyle={{ textAlignVertical: 'center' }}
+              enabled={!isOutOfStock}
+            >
+              {selectedSize === null && (
+                <Picker.Item label="size" value={null} />
+              )}
+              {product.sizes.map((size) => (
+                <Picker.Item key={size} label={size} value={size} />
+              ))}
+            </Picker>
+          </View>
+          <View className="flex-row items-center justify-between mt-3">
+            <StyledText className="text-base">Quantity</StyledText>
+            <View className="flex-row items-center">
+              <TouchableOpacity
+                onPress={decreaseQuantity}
+                className="bg-gray-200 w-8 h-8 rounded-full items-center justify-center"
+                disabled={isOutOfStock}
+              >
+                <Ionicons name="remove" size={15} color="black" />
+              </TouchableOpacity>
+              <StyledText className="text-base mx-3">{quantity}</StyledText>
+              <TouchableOpacity
+                onPress={increaseQuantity}
+                className="bg-gray-200 w-8 h-8 rounded-full items-center justify-center"
+                disabled={isOutOfStock}
+              >
+                <Ionicons name="add" size={15} color="black" />
+              </TouchableOpacity>
+            </View>
+          </View>
+          {selectedSize && (
+            <View className="flex-row justify-between items-center mt-5">
+              <StyledText className="text-base">
+                {`Size ${selectedSize} x ${quantity}`}
+              </StyledText>
+              <StyledText className="text-base font-bold">
+                {`${(product.price.amount * quantity).toFixed(2)} ${
+                  product.price.currency === 'GBP'
+                    ? '£'
+                    : product.price.currency
+                }`}
+              </StyledText>
+            </View>
+          )}
+          <StyledText
+            className="text-base text-black mt-5"
+            style={{ textAlign: 'justify' }}
+          >
+            {product.description}
+          </StyledText>
+          <View className="mb-5" />
+        </ScrollView>
+        <View className="px-3 pb-5">
+          <Button
+            mode="contained"
+            onPress={handleAddToCart}
+            className="bg-black text-white rounded-full w-full text-xl py-1"
+            disabled={isOutOfStock}
+          >
+            Add to Cart
+          </Button>
+        </View>
+      </StyledView>
+    </AlertNotificationRoot>
   );
 };
 

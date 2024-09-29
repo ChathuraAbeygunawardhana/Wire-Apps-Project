@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Text,
   View,
@@ -33,6 +33,8 @@ const AllProductsScreen = ({ navigation }) => {
   const [selectedBrand, setSelectedBrand] = useState(null);
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const searchInputRef = useRef(null);
 
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 48) / 2;
@@ -325,6 +327,12 @@ const AllProductsScreen = ({ navigation }) => {
     setFilteredProducts(products);
   };
 
+  useEffect(() => {
+    if (isSearchBarVisible && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isSearchBarVisible]);
+
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (query) {
@@ -359,6 +367,7 @@ const AllProductsScreen = ({ navigation }) => {
             }}
           >
             <TextInput
+              ref={searchInputRef}
               style={{ flex: 1 }}
               placeholder="Search"
               value={searchQuery}

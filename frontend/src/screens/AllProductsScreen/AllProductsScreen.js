@@ -16,6 +16,8 @@ import {
 import { Appbar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import renderGridItem from '../../components/renderGridItem';
+import renderListItem from '../../components/renderListItem';
 
 const AllProductsScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
@@ -87,6 +89,11 @@ const AllProductsScreen = ({ navigation }) => {
     setIsSortModalVisible(false);
   };
 
+  const renderGridItemWrapper = ({ item, index }) =>
+    renderGridItem({ item, index, navigation, itemWidth });
+  const renderListItemWrapper = ({ item }) =>
+    renderListItem({ item, navigation });
+
   const applyFilters = () => {
     let filtered = products.filter((product) => {
       const price = parseFloat(product.price.amount);
@@ -121,82 +128,6 @@ const AllProductsScreen = ({ navigation }) => {
     setIsInStock(false);
     setFilteredProducts(products);
     setIsFilterModalVisible(false);
-  };
-
-  const renderGridItem = ({ item, index }) => {
-    const currencySymbol =
-      item.price.currency === 'GBP' ? '£' : item.price.currency;
-    return (
-      <TouchableOpacity
-        onPress={() => navigation.navigate('ProductDetails', { product: item })}
-        style={{
-          width: itemWidth,
-          marginBottom: 16,
-          marginLeft: index % 2 === 0 ? 0 : 22,
-        }}
-      >
-        <View
-          style={{
-            flex: 1,
-            padding: 12,
-            backgroundColor: 'white',
-            borderRadius: 8,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
-          }}
-        >
-          <Image
-            source={{ uri: item.mainImage }}
-            style={{ width: '100%', height: 120, borderRadius: 8 }}
-            resizeMode="contain"
-          />
-          <Text
-            style={{ marginTop: 8, fontSize: 14, fontWeight: 'bold' }}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {item.name}
-          </Text>
-          <Text style={{ fontSize: 12, color: '#666' }}>{item.brandName}</Text>
-          <Text style={{ fontSize: 12, color: '#666' }}>
-            {currencySymbol}
-            {item.price.amount}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-  const renderListItem = ({ item }) => {
-    const currencySymbol =
-      item.price.currency === 'GBP' ? '£' : item.price.currency;
-    return (
-      <TouchableOpacity
-        onPress={() => navigation.navigate('ProductDetails', { product: item })}
-        className="flex-row mb-4 bg-white rounded-lg shadow-md shadow-black/50 px-5"
-      >
-        <Image
-          source={{ uri: item.mainImage }}
-          className="w-24 h-24 rounded-l-lg"
-          resizeMode="contain"
-        />
-        <View className="flex-1 p-3">
-          <Text
-            className="text-sm font-bold"
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {item.name}
-          </Text>
-          <Text className="text-xs text-gray-600">{item.brandName}</Text>
-          <Text className="text-xs text-gray-600">
-            {item.price.amount} {currencySymbol}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
   };
 
   const renderSortModal = () => (
@@ -356,7 +287,6 @@ const AllProductsScreen = ({ navigation }) => {
                 marginVertical: 10,
               }}
             />
-            {/* Divider */}
             <View className="flex-row justify-between mt-4">
               <TouchableOpacity
                 className="bg-white border border-black px-4 py-2 rounded-full"
@@ -487,7 +417,9 @@ const AllProductsScreen = ({ navigation }) => {
           <FlatList
             key={isListView ? 'list' : 'grid'}
             data={filteredProducts}
-            renderItem={isListView ? renderListItem : renderGridItem}
+            renderItem={
+              isListView ? renderListItemWrapper : renderGridItemWrapper
+            }
             keyExtractor={(item) => item.id}
             numColumns={isListView ? 1 : 2}
             contentContainerStyle={{ paddingBottom: 16 }}

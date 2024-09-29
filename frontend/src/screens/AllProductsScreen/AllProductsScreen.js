@@ -205,7 +205,6 @@ const AllProductsScreen = ({ navigation }) => {
       </TouchableWithoutFeedback>
     </Modal>
   );
-
   const renderFilterModal = () => (
     <Modal
       visible={isFilterModalVisible}
@@ -237,18 +236,25 @@ const AllProductsScreen = ({ navigation }) => {
                 <TouchableOpacity
                   key={colour}
                   style={{
-                    width: 30,
-                    height: 30,
-                    borderRadius: 15,
-                    backgroundColor: colour.toLowerCase(),
-                    marginHorizontal: 5,
+                    padding: 2, // Add padding to create space between the circle and the border
+                    borderRadius: 17, // Adjust borderRadius to match the outer circle
                     borderWidth: selectedColour === colour ? 2 : 0,
                     borderColor: 'black',
+                    marginHorizontal: 5,
                   }}
                   onPress={() =>
                     setSelectedColour(selectedColour === colour ? null : colour)
                   }
-                />
+                >
+                  <View
+                    style={{
+                      width: 30,
+                      height: 30,
+                      borderRadius: 15,
+                      backgroundColor: colour.toLowerCase(),
+                    }}
+                  />
+                </TouchableOpacity>
               ))}
             </View>
 
@@ -311,7 +317,6 @@ const AllProductsScreen = ({ navigation }) => {
       </TouchableWithoutFeedback>
     </Modal>
   );
-
   return (
     <SafeAreaView className="flex-1 bg-gray-200">
       <Appbar.Header className="bg-white">

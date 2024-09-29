@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Appbar, Button } from 'react-native-paper';
-import { Picker } from '@react-native-picker/picker';
 import { styled } from 'nativewind';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../redux/cartSlice';
@@ -34,7 +33,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
   const isOutOfStock = product.stockStatus !== 'IN STOCK';
 
-  const handleSizeChange = (itemValue) => {
+  const handleSizeChange = (size) => {
     if (isOutOfStock) {
       Dialog.show({
         type: ALERT_TYPE.WARNING,
@@ -47,7 +46,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         buttonTextStyle: { color: 'white' },
       });
     } else {
-      setSelectedSize(itemValue);
+      setSelectedSize(size);
     }
   };
 
@@ -137,21 +136,29 @@ const ProductDetailsScreen = ({ route, navigation }) => {
               {product.stockStatus.toLowerCase()}
             </StyledText>
           </View>
-          <View className="border border-gray-400 rounded-md mt-5">
-            <Picker
-              selectedValue={selectedSize}
-              onValueChange={handleSizeChange}
-              className="h-12 justify-center items-center"
-              itemStyle={{ textAlignVertical: 'center' }}
-              enabled={!isOutOfStock}
-            >
-              {selectedSize === null && (
-                <Picker.Item label="size" value={null} />
-              )}
+          <View className="flex-row justify-between items-center mt-5">
+            <StyledText className="text-base">Size</StyledText>
+            <View className="flex-row flex-wrap justify-end">
               {product.sizes.map((size) => (
-                <Picker.Item key={size} label={size} value={size} />
+                <TouchableOpacity
+                  key={size}
+                  onPress={() => handleSizeChange(size)}
+                  className={`border rounded-md px-3 py-2 ml-2 w-12 items-center justify-center ${
+                    selectedSize === size
+                      ? 'bg-black border-black'
+                      : 'bg-white border-black'
+                  }`}
+                >
+                  <StyledText
+                    className={`text-base ${
+                      selectedSize === size ? 'text-white' : 'text-black'
+                    }`}
+                  >
+                    {size}
+                  </StyledText>
+                </TouchableOpacity>
               ))}
-            </Picker>
+            </View>
           </View>
           <View className="flex-row items-center justify-between mt-3">
             <StyledText className="text-base">Quantity</StyledText>

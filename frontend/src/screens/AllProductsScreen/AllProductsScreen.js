@@ -8,120 +8,21 @@ import {
   Dimensions,
   StyleSheet,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import renderGridItem from '../../components/renderGridItem';
 import renderListItem from '../../components/renderListItem';
 import Header from '../../components/Header';
 import FilterSortBar from '../../components/FilterSortBar';
 import SortModal from '../../components/SortModal';
 import FilterModal from '../../components/FilterModal';
+import {
+  fetchProducts,
+  sortProducts,
+  applyFilters,
+  discardFilters,
+} from '../../utils/productUtils';
 
 const screenWidth = Dimensions.get('window').width;
 const itemWidth = (screenWidth - 48) / 2;
-
-const fetchProducts = async (
-  setProducts,
-  setFilteredProducts,
-  setIsLoading,
-  setHasError
-) => {
-  setIsLoading(true);
-  setHasError(false);
-  try {
-    const response = await fetch(
-      'https://s3-eu-west-1.amazonaws.com/api.themeshplatform.com/products.json'
-    );
-    const data = await response.json();
-    if (data.result === 'success') {
-      setProducts(data.data);
-      setFilteredProducts(data.data);
-    } else {
-      setHasError(true);
-    }
-  } catch (error) {
-    setHasError(true);
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-const sortProducts = (
-  order,
-  filteredProducts,
-  setFilteredProducts,
-  setSelectedSortOption,
-  setIsSortModalVisible
-) => {
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    if (order === 'lowToHigh') {
-      return a.price.amount - b.price.amount;
-    } else if (order === 'highToLow') {
-      return b.price.amount - a.price.amount;
-    } else if (order === 'newest') {
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    }
-  });
-  setFilteredProducts(sortedProducts);
-  setSelectedSortOption(
-    order === 'lowToHigh'
-      ? 'Price: Low to High'
-      : order === 'highToLow'
-      ? 'Price: High to Low'
-      : 'Newest'
-  );
-  setIsSortModalVisible(false);
-};
-
-const applyFilters = (
-  products,
-  priceRange,
-  selectedColour,
-  selectedSize,
-  selectedBrand,
-  isInStock,
-  setFilteredProducts,
-  setIsFilterModalVisible
-) => {
-  const filtered = products.filter((product) => {
-    const price = parseFloat(product.price.amount);
-    const inPriceRange = price >= priceRange[0] && price <= priceRange[1];
-    const colourMatch =
-      !selectedColour ||
-      (product.colour &&
-        product.colour.toLowerCase() === selectedColour.toLowerCase());
-    const sizeMatch =
-      !selectedSize || (product.sizes && product.sizes.includes(selectedSize));
-    const brandMatch =
-      !selectedBrand ||
-      (product.brandName && product.brandName === selectedBrand);
-    const inStockMatch = !isInStock || product.stockStatus === 'IN STOCK';
-    return (
-      inPriceRange && colourMatch && sizeMatch && brandMatch && inStockMatch
-    );
-  });
-  setFilteredProducts(filtered);
-  setIsFilterModalVisible(false);
-};
-
-const discardFilters = (
-  setSelectedColour,
-  setSelectedSize,
-  setSelectedBrand,
-  setPriceRange,
-  setIsInStock,
-  setFilteredProducts,
-  products,
-  setIsFilterModalVisible
-) => {
-  setSelectedColour(null);
-  setSelectedSize(null);
-  setSelectedBrand(null);
-  setPriceRange([0, 1000]);
-  setIsInStock(false);
-  setFilteredProducts(products);
-  setIsFilterModalVisible(false);
-};
 
 const AllProductsScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);

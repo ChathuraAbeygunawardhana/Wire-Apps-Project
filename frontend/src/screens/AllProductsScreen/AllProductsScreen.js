@@ -216,7 +216,7 @@ const AllProductsScreen = ({ navigation }) => {
         <View className="flex-1 justify-end">
           <View className="absolute top-0 left-0 right-0 bottom-0 bg-gray-800 opacity-50" />
           <View className="bg-white p-4 rounded-t-xl border border-gray-300">
-            <Text className="text-lg font-bold mb-4">Filter</Text>
+            <Text className="text-lg font-bold mb-4 text-center">Filter</Text>
 
             <Text className="text-sm font-semibold mb-2">Price Range</Text>
             <Text className="text-sm mb-4">
@@ -224,7 +224,7 @@ const AllProductsScreen = ({ navigation }) => {
             </Text>
 
             <Text className="text-sm font-semibold mb-2">Colours</Text>
-            <View className="flex-row mb-4">
+            <View className="flex-row flex-wrap justify-between mb-2">
               {[
                 'Blue',
                 'Black',
@@ -235,78 +235,74 @@ const AllProductsScreen = ({ navigation }) => {
               ].map((colour) => (
                 <TouchableOpacity
                   key={colour}
-                  style={{
-                    padding: 2, // Add padding to create space between the circle and the border
-                    borderRadius: 17, // Adjust borderRadius to match the outer circle
-                    borderWidth: selectedColour === colour ? 2 : 0,
-                    borderColor: 'black',
-                    marginHorizontal: 5,
-                  }}
+                  className={`m-1 p-1 rounded-full items-center justify-center ${
+                    selectedColour === colour ? 'border-2 border-black' : ''
+                  }`}
+                  style={{ width: 40, height: 40 }}
                   onPress={() =>
                     setSelectedColour(selectedColour === colour ? null : colour)
                   }
                 >
-                  <View
-                    style={{
-                      width: 30,
-                      height: 30,
-                      borderRadius: 15,
-                      backgroundColor: colour.toLowerCase(),
-                    }}
-                  />
+                  {colour === 'Multicoloured' ? (
+                    <View className="w-8 h-8 rounded-full overflow-hidden flex-row">
+                      {[
+                        'red',
+                        'orange',
+                        'yellow',
+                        'green',
+                        'blue',
+                        'indigo',
+                        'violet',
+                      ].map((color, index) => (
+                        <View
+                          key={index}
+                          className="flex-1"
+                          style={{ backgroundColor: color }}
+                        />
+                      ))}
+                    </View>
+                  ) : (
+                    <View
+                      className="w-8 h-8 rounded-full"
+                      style={{ backgroundColor: colour.toLowerCase() }}
+                    />
+                  )}
                 </TouchableOpacity>
               ))}
             </View>
 
-            <Text className="text-sm font-semibold mb-2 mt-4">Sizes</Text>
-            <View className="flex-row flex-wrap">
-              {['S', 'M', 'L', 'XL', 'XXL'].map((size) => (
-                <TouchableOpacity
-                  key={size}
-                  style={{
-                    padding: 10,
-                    margin: 5,
-                    backgroundColor: selectedSize === size ? 'blue' : 'gray',
-                    borderRadius: 5,
-                  }}
-                  onPress={() =>
-                    setSelectedSize(selectedSize === size ? null : size)
-                  }
-                >
-                  <Text style={{ color: 'white' }}>{size}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            <Text className="text-sm font-semibold mb-2 mt-4">Brands</Text>
-            <View className="flex-row flex-wrap">
+            <Text className="text-sm font-semibold mb-2 mt-2">Brands</Text>
+            <View className="flex-row flex-wrap justify-between">
               {['Nike', 'Adidas', 'Puma', 'Reebok'].map((brand) => (
                 <TouchableOpacity
                   key={brand}
-                  style={{
-                    padding: 10,
-                    margin: 5,
-                    backgroundColor: selectedBrand === brand ? 'blue' : 'gray',
-                    borderRadius: 5,
-                  }}
+                  className={`flex-1 m-1 p-2 rounded-full border items-center justify-center ${
+                    selectedBrand === brand ? 'bg-black' : 'bg-white'
+                  }`}
                   onPress={() =>
                     setSelectedBrand(selectedBrand === brand ? null : brand)
                   }
                 >
-                  <Text style={{ color: 'white' }}>{brand}</Text>
+                  <Text
+                    className={`text-center ${
+                      selectedBrand === brand ? 'text-white' : 'text-black'
+                    }`}
+                  >
+                    {brand}
+                  </Text>
                 </TouchableOpacity>
               ))}
             </View>
 
             <View className="flex-row justify-between mt-4">
               <TouchableOpacity
-                className="bg-gray-200 px-4 py-2 rounded"
+                className="bg-white border border-black px-4 py-2 rounded-full"
                 onPress={discardFilters}
               >
-                <Text>Discard</Text>
+                <Text className="text-black">Discard</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="bg-blue-500 px-4 py-2 rounded"
+                className="bg-black px-4 py-2 rounded-full"
                 onPress={applyFilters}
               >
                 <Text className="text-white">Apply</Text>
@@ -359,6 +355,12 @@ const AllProductsScreen = ({ navigation }) => {
         ) : hasError ? (
           <View className="flex-1 justify-center items-center">
             <Text className="mt-2 text-sm">Couldn't find any products</Text>
+          </View>
+        ) : filteredProducts.length === 0 ? (
+          <View className="flex-1 justify-center items-center">
+            <Text className="mt-2 text-sm">
+              No products were found matching your selection
+            </Text>
           </View>
         ) : (
           <FlatList

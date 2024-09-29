@@ -80,8 +80,8 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
     Dialog.show({
       type: ALERT_TYPE.SUCCESS,
-      title: 'Success',
-      textBody: 'Item added to cart',
+      title: 'Added to cart',
+      textBody: 'Item was added to cart',
       button: 'OK',
       titleStyle: { color: 'black' },
       textBodyStyle: { color: 'black' },

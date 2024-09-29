@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Modal,
   TouchableWithoutFeedback,
+  TextInput,
 } from 'react-native';
 import { Appbar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
@@ -30,6 +31,8 @@ const AllProductsScreen = ({ navigation }) => {
   const [selectedColour, setSelectedColour] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedBrand, setSelectedBrand] = useState(null);
+  const [isSearchBarVisible, setIsSearchBarVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 48) / 2;
@@ -101,6 +104,7 @@ const AllProductsScreen = ({ navigation }) => {
     setFilteredProducts(filtered);
     setIsFilterModalVisible(false);
   };
+
   const discardFilters = () => {
     setSelectedColour(null);
     setSelectedSize(null);
@@ -205,6 +209,7 @@ const AllProductsScreen = ({ navigation }) => {
       </TouchableWithoutFeedback>
     </Modal>
   );
+
   const renderFilterModal = () => (
     <Modal
       visible={isFilterModalVisible}
@@ -313,12 +318,58 @@ const AllProductsScreen = ({ navigation }) => {
       </TouchableWithoutFeedback>
     </Modal>
   );
+
+  const handleSearchIconPress = () => {
+    setIsSearchBarVisible(!isSearchBarVisible);
+    setSearchQuery('');
+    setFilteredProducts(products);
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    if (query) {
+      const filtered = products.filter((product) =>
+        product.name.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    } else {
+      setFilteredProducts(products);
+    }
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-gray-200">
       <Appbar.Header className="bg-white">
         <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Shoes" className="items-center" />
-        <Appbar.Action icon="magnify" onPress={() => {}} />
+        {!isSearchBarVisible && (
+          <Appbar.Content title="Shoes" className="items-center" />
+        )}
+        {isSearchBarVisible && (
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+              backgroundColor: 'white',
+              borderRadius: 5,
+              borderColor: 'lightgrey',
+              borderWidth: 1,
+              paddingHorizontal: 10,
+              marginRight: 10,
+            }}
+          >
+            <TextInput
+              style={{ flex: 1 }}
+              placeholder="Search"
+              value={searchQuery}
+              onChangeText={handleSearch}
+            />
+            <TouchableOpacity onPress={handleSearchIconPress}>
+              <Ionicons name="close" size={20} color="grey" />
+            </TouchableOpacity>
+          </View>
+        )}
+        <Appbar.Action icon="magnify" onPress={handleSearchIconPress} />
       </Appbar.Header>
       <View className="flex-1 mx-3">
         <View className="flex-row justify-between items-center mb-3 mt-3 p-2 bg-white rounded-lg shadow-md shadow-black/50">

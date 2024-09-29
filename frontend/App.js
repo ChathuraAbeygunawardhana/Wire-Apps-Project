@@ -45,6 +45,11 @@ const TabNavigator = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
+        tabBarStyle: {
+          height: 60,
+          paddingTop: 5,
+          paddingBottom: 5,
+        },
         tabBarIcon: ({ color, size }) => {
           let iconName;
 

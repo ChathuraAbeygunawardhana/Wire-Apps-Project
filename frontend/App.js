@@ -14,8 +14,7 @@ import AllProductsScreen from './src/screens/AllProductsScreen/AllProductsScreen
 import ProductDetailsScreen from './src/screens/ProductDetailsScreen/ProductDetailsScreen';
 import CartScreen from './src/screens/CartScreen/CartScreen';
 import ProfileScreen from './src/screens/ProfileScreen/ProfileScreen';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -38,6 +37,26 @@ const AllProductsStack = () => (
   </Stack.Navigator>
 );
 
+const TabBarIcon = ({ route, color, size, totalItems }) => {
+  const iconName = {
+    Home: 'home',
+    Shop: 'pricetag',
+    Cart: 'cart',
+    Profile: 'person',
+  }[route.name];
+
+  return (
+    <View>
+      <Ionicons name={iconName} size={size} color={color} />
+      {route.name === 'Cart' && totalItems > 0 && (
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>{totalItems}</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
 const TabNavigator = () => {
   const totalItems = useSelector(selectTotalItems);
 
@@ -45,51 +64,15 @@ const TabNavigator = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarStyle: {
-          height: 60,
-          paddingTop: 5,
-          paddingBottom: 5,
-        },
-        tabBarIcon: ({ color, size }) => {
-          let iconName;
-
-          if (route.name === 'Home') {
-            iconName = 'home';
-          } else if (route.name === 'Shop') {
-            iconName = 'pricetag';
-          } else if (route.name === 'Cart') {
-            iconName = 'cart';
-          } else if (route.name === 'Profile') {
-            iconName = 'person';
-          }
-
-          return (
-            <View>
-              <Ionicons name={iconName} size={size} color={color} />
-              {route.name === 'Cart' && totalItems > 0 && (
-                <View
-                  style={{
-                    position: 'absolute',
-                    right: -6,
-                    top: -3,
-                    backgroundColor: 'black',
-                    borderRadius: 9,
-                    width: 18,
-                    height: 18,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Text
-                    style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}
-                  >
-                    {totalItems}
-                  </Text>
-                </View>
-              )}
-            </View>
-          );
-        },
+        tabBarStyle: styles.tabBar,
+        tabBarIcon: ({ color, size }) => (
+          <TabBarIcon
+            route={route}
+            color={color}
+            size={size}
+            totalItems={totalItems}
+          />
+        ),
         tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: 'gray',
       })}
@@ -111,5 +94,29 @@ const App = () => {
     </Provider>
   );
 };
+
+const styles = StyleSheet.create({
+  tabBar: {
+    height: 60,
+    paddingTop: 5,
+    paddingBottom: 5,
+  },
+  badge: {
+    position: 'absolute',
+    right: -6,
+    top: -3,
+    backgroundColor: 'black',
+    borderRadius: 9,
+    width: 18,
+    height: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  badgeText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+});
 
 export default App;

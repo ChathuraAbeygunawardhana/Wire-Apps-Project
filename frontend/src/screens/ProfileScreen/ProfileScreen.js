@@ -1,11 +1,56 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, ScrollView } from 'react-native';
+import { Button } from 'react-native-paper';
+import { styled } from 'nativewind';
+import { useDispatch } from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
 
-const ProfileScreen = () => {
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledImage = styled(Image);
+
+const ProfileScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const [user, setUser] = useState({
+    name: 'Demo User',
+    email: 'demouser@testmail.com',
+    profilePicture: 'https://example.com/profile.jpg',
+  });
+
   return (
-    <View>
-      <Text>Profile Screen</Text>
-    </View>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+    >
+      <StyledView className="p-4 items-center">
+        <StyledImage
+          source={{
+            uri: 'https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671122.jpg?w=740&t=st=1727610603~exp=1727611203~hmac=d37706e21bf17347aecda6eb56990b9f6ba680dc432f5a0a26aa46486b8405af',
+          }}
+          className="w-32 h-32 rounded-full"
+        />
+
+        <StyledText className="text-xl text-center mt-2">
+          {user.name}
+        </StyledText>
+        <StyledText className="text-center text-gray-600">
+          {user.email}
+        </StyledText>
+        <Button
+          mode="contained"
+          className="mt-4 bg-black w-64"
+          labelStyle={{ color: 'white' }}
+        >
+          Edit Profile
+        </Button>
+        <Button
+          mode="outlined"
+          className="mt-4 border-black w-64"
+          labelStyle={{ color: 'black' }}
+        >
+          Logout
+        </Button>
+      </StyledView>
+    </ScrollView>
   );
 };
 

@@ -18,7 +18,7 @@ const Home = () => {
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 1000,
+      duration: 500,
       easing: Easing.inOut(Easing.ease),
       useNativeDriver: true,
     }).start();

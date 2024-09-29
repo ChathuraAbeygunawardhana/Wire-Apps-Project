@@ -16,6 +16,7 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import renderGridItem from '../../components/renderGridItem';
 import renderListItem from '../../components/renderListItem';
 import Header from '../../components/Header';
+import FilterSortBar from '../../components/FilterSortBar';
 
 const AllProductsScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
@@ -315,32 +316,13 @@ const AllProductsScreen = ({ navigation }) => {
         setFilteredProducts={setFilteredProducts}
       />
       <View className="flex-1 mx-3">
-        <View className="flex-row justify-between items-center mb-3 mt-3 p-2 bg-white rounded-lg shadow-md shadow-black/50">
-          <TouchableOpacity
-            className="flex-row items-center"
-            onPress={() => setIsFilterModalVisible(true)}
-          >
-            <Ionicons name="filter" size={16} color="black" />
-            <Text className="ml-2 text-sm">Filter</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="flex-row items-center"
-            onPress={() => setIsSortModalVisible(true)}
-          >
-            <Ionicons name="swap-vertical" size={16} color="black" />
-            <Text className="ml-2 text-sm">{selectedSortOption}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="flex-row items-center"
-            onPress={() => setIsListView(!isListView)}
-          >
-            <Ionicons
-              name={isListView ? 'grid' : 'list'}
-              size={20}
-              color="black"
-            />
-          </TouchableOpacity>
-        </View>
+        <FilterSortBar
+          setIsFilterModalVisible={setIsFilterModalVisible}
+          setIsSortModalVisible={setIsSortModalVisible}
+          selectedSortOption={selectedSortOption}
+          isListView={isListView}
+          setIsListView={setIsListView}
+        />
         {isLoading ? (
           <View
             style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}

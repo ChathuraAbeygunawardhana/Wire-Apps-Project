@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { Appbar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
 
 const AllProductsScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
@@ -24,7 +25,7 @@ const AllProductsScreen = ({ navigation }) => {
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [selectedSortOption, setSelectedSortOption] = useState('Sort');
-  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [priceRange, setPriceRange] = useState([0, 100]);
   const [selectedColours, setSelectedColours] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [selectedBrands, setSelectedBrands] = useState([]);
@@ -226,11 +227,30 @@ const AllProductsScreen = ({ navigation }) => {
             <Text className="text-lg font-bold mb-4 text-center">Filter</Text>
 
             <Text className="text-sm font-semibold mb-2">Price Range</Text>
-            <Text className="text-sm mb-4">
-              ${priceRange[0].toFixed(2)} - ${priceRange[1].toFixed(2)}
-            </Text>
+            <View className="flex-row items-center mb-4">
+              <Text className="text-sm flex-1">
+                ${priceRange[0].toFixed(2)} - ${priceRange[1].toFixed(2)}
+              </Text>
+              <MultiSlider
+                values={priceRange}
+                sliderLength={200} // Adjust the length as needed
+                onValuesChange={(values) => setPriceRange(values)}
+                min={0}
+                max={100}
+                step={1}
+                allowOverlap={false}
+                snapped
+                selectedStyle={{
+                  backgroundColor: 'black',
+                }}
+                markerStyle={{
+                  backgroundColor: 'black',
+                }}
+                style={{ alignSelf: 'flex-end' }}
+              />
+            </View>
 
-            <Text className="text-sm font-semibold mb-2">Colours</Text>
+            <Text className="text-sm font-semibold mb-2 mt-2">Colours</Text>
             <View className="flex-row flex-wrap justify-between mb-2">
               {[
                 'Blue',
@@ -320,7 +340,6 @@ const AllProductsScreen = ({ navigation }) => {
       </TouchableWithoutFeedback>
     </Modal>
   );
-
   const handleSearchIconPress = () => {
     setIsSearchBarVisible(!isSearchBarVisible);
     setSearchQuery('');

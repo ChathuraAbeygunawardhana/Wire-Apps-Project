@@ -126,7 +126,8 @@ const ProductDetailsScreen = ({ route, navigation }) => {
           </View>
           <View className="flex-row justify-between items-center">
             <StyledText className="text-lg text-gray-500">
-              {product.brandName} - {product.colour}
+              {product.brandName ? product.brandName : 'unbranded'} -{' '}
+              {product.colour}
             </StyledText>
             <StyledText
               className={`text-lg ${
@@ -200,6 +201,10 @@ const ProductDetailsScreen = ({ route, navigation }) => {
           >
             {product.description}
           </StyledText>
+          <View className="flex-row items-center mt-5">
+            <StyledText className="text-base">SKU - </StyledText>
+            <StyledText className="text-base">{product.SKU}</StyledText>
+          </View>
           <View className="mb-5" />
         </ScrollView>
         <View className="px-3 pb-5">

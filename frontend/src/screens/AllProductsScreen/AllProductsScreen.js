@@ -4,12 +4,8 @@ import {
   View,
   FlatList,
   SafeAreaView,
-  TouchableOpacity,
-  Dimensions,
   ActivityIndicator,
-  Modal,
-  TouchableWithoutFeedback,
-  Switch,
+  Dimensions,
   StyleSheet,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -21,6 +17,112 @@ import FilterSortBar from '../../components/FilterSortBar';
 import SortModal from '../../components/SortModal';
 import FilterModal from '../../components/FilterModal';
 
+const screenWidth = Dimensions.get('window').width;
+const itemWidth = (screenWidth - 48) / 2;
+
+const fetchProducts = async (
+  setProducts,
+  setFilteredProducts,
+  setIsLoading,
+  setHasError
+) => {
+  setIsLoading(true);
+  setHasError(false);
+  try {
+    const response = await fetch(
+      'https://s3-eu-west-1.amazonaws.com/api.themeshplatform.com/products.json'
+    );
+    const data = await response.json();
+    if (data.result === 'success') {
+      setProducts(data.data);
+      setFilteredProducts(data.data);
+    } else {
+      setHasError(true);
+    }
+  } catch (error) {
+    setHasError(true);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+const sortProducts = (
+  order,
+  filteredProducts,
+  setFilteredProducts,
+  setSelectedSortOption,
+  setIsSortModalVisible
+) => {
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (order === 'lowToHigh') {
+      return a.price.amount - b.price.amount;
+    } else if (order === 'highToLow') {
+      return b.price.amount - a.price.amount;
+    } else if (order === 'newest') {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    }
+  });
+  setFilteredProducts(sortedProducts);
+  setSelectedSortOption(
+    order === 'lowToHigh'
+      ? 'Price: Low to High'
+      : order === 'highToLow'
+      ? 'Price: High to Low'
+      : 'Newest'
+  );
+  setIsSortModalVisible(false);
+};
+
+const applyFilters = (
+  products,
+  priceRange,
+  selectedColour,
+  selectedSize,
+  selectedBrand,
+  isInStock,
+  setFilteredProducts,
+  setIsFilterModalVisible
+) => {
+  const filtered = products.filter((product) => {
+    const price = parseFloat(product.price.amount);
+    const inPriceRange = price >= priceRange[0] && price <= priceRange[1];
+    const colourMatch =
+      !selectedColour ||
+      (product.colour &&
+        product.colour.toLowerCase() === selectedColour.toLowerCase());
+    const sizeMatch =
+      !selectedSize || (product.sizes && product.sizes.includes(selectedSize));
+    const brandMatch =
+      !selectedBrand ||
+      (product.brandName && product.brandName === selectedBrand);
+    const inStockMatch = !isInStock || product.stockStatus === 'IN STOCK';
+    return (
+      inPriceRange && colourMatch && sizeMatch && brandMatch && inStockMatch
+    );
+  });
+  setFilteredProducts(filtered);
+  setIsFilterModalVisible(false);
+};
+
+const discardFilters = (
+  setSelectedColour,
+  setSelectedSize,
+  setSelectedBrand,
+  setPriceRange,
+  setIsInStock,
+  setFilteredProducts,
+  products,
+  setIsFilterModalVisible
+) => {
+  setSelectedColour(null);
+  setSelectedSize(null);
+  setSelectedBrand(null);
+  setPriceRange([0, 1000]);
+  setIsInStock(false);
+  setFilteredProducts(products);
+  setIsFilterModalVisible(false);
+};
+
 const AllProductsScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -31,104 +133,21 @@ const AllProductsScreen = ({ navigation }) => {
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [selectedSortOption, setSelectedSortOption] = useState('Sort');
   const [priceRange, setPriceRange] = useState([0, 100]);
-  const [selectedColours, setSelectedColours] = useState([]);
-  const [selectedSizes, setSelectedSizes] = useState([]);
-  const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedColour, setSelectedColour] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedBrand, setSelectedBrand] = useState(null);
+  const [isInStock, setIsInStock] = useState(false);
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isInStock, setIsInStock] = useState(false);
-
-  const screenWidth = Dimensions.get('window').width;
-  const itemWidth = (screenWidth - 48) / 2;
 
   useEffect(() => {
-    setIsLoading(true);
-    setHasError(false);
-    fetch(
-      'https://s3-eu-west-1.amazonaws.com/api.themeshplatform.com/products.json'
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.result === 'success') {
-          setProducts(data.data);
-          setFilteredProducts(data.data);
-        } else {
-          setHasError(true);
-        }
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 2000);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        setHasError(true);
-      });
+    fetchProducts(setProducts, setFilteredProducts, setIsLoading, setHasError);
   }, []);
-
-  const sortProducts = (order) => {
-    const sortedProducts = [...filteredProducts].sort((a, b) => {
-      if (order === 'lowToHigh') {
-        return a.price.amount - b.price.amount;
-      } else if (order === 'highToLow') {
-        return b.price.amount - a.price.amount;
-      } else if (order === 'newest') {
-        return new Date(b.createdAt) - new Date(a.createdAt);
-      }
-    });
-    setFilteredProducts(sortedProducts);
-    setSelectedSortOption(
-      order === 'lowToHigh'
-        ? 'Price: Low to High'
-        : order === 'highToLow'
-        ? 'Price: High to Low'
-        : 'Newest'
-    );
-    setIsSortModalVisible(false);
-  };
 
   const renderGridItemWrapper = ({ item, index }) =>
     renderGridItem({ item, index, navigation, itemWidth });
   const renderListItemWrapper = ({ item }) =>
     renderListItem({ item, navigation });
-
-  const applyFilters = () => {
-    let filtered = products.filter((product) => {
-      const price = parseFloat(product.price.amount);
-      const inPriceRange = price >= priceRange[0] && price <= priceRange[1];
-
-      const colourMatch =
-        !selectedColour ||
-        (product.colour &&
-          product.colour.toLowerCase() === selectedColour.toLowerCase());
-      const sizeMatch =
-        !selectedSize ||
-        (product.sizes && product.sizes.includes(selectedSize));
-      const brandMatch =
-        !selectedBrand ||
-        (product.brandName && product.brandName === selectedBrand);
-      const inStockMatch = !isInStock || product.stockStatus === 'IN STOCK';
-
-      return (
-        inPriceRange && colourMatch && sizeMatch && brandMatch && inStockMatch
-      );
-    });
-
-    setFilteredProducts(filtered);
-    setIsFilterModalVisible(false);
-  };
-
-  const discardFilters = () => {
-    setSelectedColour(null);
-    setSelectedSize(null);
-    setSelectedBrand(null);
-    setPriceRange([0, 1000]);
-    setIsInStock(false);
-    setFilteredProducts(products);
-    setIsFilterModalVisible(false);
-  };
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -180,7 +199,15 @@ const AllProductsScreen = ({ navigation }) => {
       <SortModal
         isSortModalVisible={isSortModalVisible}
         setIsSortModalVisible={setIsSortModalVisible}
-        sortProducts={sortProducts}
+        sortProducts={(order) =>
+          sortProducts(
+            order,
+            filteredProducts,
+            setFilteredProducts,
+            setSelectedSortOption,
+            setIsSortModalVisible
+          )
+        }
       />
       <FilterModal
         isFilterModalVisible={isFilterModalVisible}
@@ -193,8 +220,30 @@ const AllProductsScreen = ({ navigation }) => {
         setSelectedBrand={setSelectedBrand}
         isInStock={isInStock}
         setIsInStock={setIsInStock}
-        applyFilters={applyFilters}
-        discardFilters={discardFilters}
+        applyFilters={() =>
+          applyFilters(
+            products,
+            priceRange,
+            selectedColour,
+            selectedSize,
+            selectedBrand,
+            isInStock,
+            setFilteredProducts,
+            setIsFilterModalVisible
+          )
+        }
+        discardFilters={() =>
+          discardFilters(
+            setSelectedColour,
+            setSelectedSize,
+            setSelectedBrand,
+            setPriceRange,
+            setIsInStock,
+            setFilteredProducts,
+            products,
+            setIsFilterModalVisible
+          )
+        }
       />
     </SafeAreaView>
   );

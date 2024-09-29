@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   message: {
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     margin: 5,
-    borderRadius: 5,
+    borderRadius: 10,
     alignItems: 'center',
   },
   cancelButton: {
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 13,
   },
   cancelButtonText: {
     color: 'black',

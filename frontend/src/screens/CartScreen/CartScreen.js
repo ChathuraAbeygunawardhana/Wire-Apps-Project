@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import CustomAlert from './CustomAlert';
 import { calculateTotal, handleConfirmDelete, handleDelete } from './cartUtils';
 import { removeFromCart } from '../../redux/cartSlice';
-import CartHeader from './CartHeader';
+import Header from '../../components/Header';
 import TotalAmount from './TotalAmount';
 import CartItemList from './CartItemList';
 import BottomButton from '../../components/BottomButton';
@@ -17,7 +17,18 @@ const CartScreen = ({ navigation }) => {
 
   return (
     <View className="flex-1 bg-gray-200">
-      <CartHeader />
+      <Header
+        navigation={null}
+        isSearchBarVisible={false}
+        setIsSearchBarVisible={() => {}}
+        searchQuery=""
+        setSearchQuery={() => {}}
+        products={[]}
+        setFilteredProducts={() => {}}
+        showSearchIcon={false}
+        showBackButton={false}
+        title="Cart"
+      />
       <CartItemList
         cartItems={cartItems}
         onDelete={(item) =>

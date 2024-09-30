@@ -12,6 +12,7 @@ const Header = ({
   products,
   setFilteredProducts,
   showSearchIcon = true,
+  showBackButton = true,
   title = 'Shoes',
 }) => {
   const searchInputRef = useRef(null);
@@ -42,7 +43,9 @@ const Header = ({
 
   return (
     <Appbar.Header style={styles.header}>
-      <Appbar.BackAction onPress={() => navigation.goBack()} />
+      {showBackButton && (
+        <Appbar.BackAction onPress={() => navigation.goBack()} />
+      )}
       {!isSearchBarVisible && (
         <Appbar.Content title={title} style={styles.content} />
       )}

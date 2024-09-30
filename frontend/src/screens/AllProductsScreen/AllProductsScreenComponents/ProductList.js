@@ -1,9 +1,9 @@
 import React from 'react';
 import { FlatList } from 'react-native';
-import LoadingComponent from '../components/LoadingComponent';
-import ErrorView from '../components/ErrorView';
-import NoProductsFound from '../components/NoProductsFound';
-import styles from '../screens/AllProductsScreen/AllproductsScreen.styles';
+import LoadingComponent from './LoadingComponent';
+import ErrorView from './ErrorView';
+import NoProductsFound from './NoProductsFound';
+import styles from '../AllproductsScreen.styles';
 
 const ProductList = ({
   isLoading,

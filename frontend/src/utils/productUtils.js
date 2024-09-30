@@ -10,12 +10,17 @@ export const fetchProducts = async (
     const response = await fetch(
       'https://s3-eu-west-1.amazonaws.com/api.themeshplatform.com/products.json'
     );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     const data = await response.json();
     if (data.result === 'success') {
       setProducts(data.data);
       setFilteredProducts(data.data);
     } else {
-      setHasError(true);
+      throw new Error('Failed to fetch products: API returned an error');
     }
   } catch (error) {
     setHasError(true);
@@ -23,7 +28,6 @@ export const fetchProducts = async (
     setIsLoading(false);
   }
 };
-
 export const sortProducts = (
   order,
   filteredProducts,
@@ -95,7 +99,7 @@ export const discardFilters = (
   setSelectedColour(null);
   setSelectedSize(null);
   setSelectedBrand(null);
-  setPriceRange([0, 1000]);
+  setPriceRange([0, 100]);
   setIsInStock(false);
   setFilteredProducts(products);
   setIsFilterModalVisible(false);

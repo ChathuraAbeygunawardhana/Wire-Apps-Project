@@ -1,7 +1,15 @@
 import React, { useEffect, useRef } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
 import { Appbar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
+
+const { width: screenWidth } = Dimensions.get('window');
 
 const Header = ({
   navigation,
@@ -44,10 +52,17 @@ const Header = ({
   return (
     <Appbar.Header style={styles.header}>
       {showBackButton && (
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
+        <Appbar.BackAction
+          onPress={() => navigation.goBack()}
+          size={screenWidth * 0.05}
+        />
       )}
       {!isSearchBarVisible && (
-        <Appbar.Content title={title} style={styles.content} />
+        <Appbar.Content
+          title={title}
+          titleStyle={styles.title}
+          style={styles.content}
+        />
       )}
       {isSearchBarVisible && (
         <View style={styles.searchContainer}>
@@ -59,12 +74,16 @@ const Header = ({
             onChangeText={handleSearch}
           />
           <TouchableOpacity onPress={handleSearchIconPress}>
-            <Ionicons name="close" size={20} color="grey" />
+            <Ionicons name="close" size={screenWidth * 0.05} color="grey" />
           </TouchableOpacity>
         </View>
       )}
       {showSearchIcon && (
-        <Appbar.Action icon="magnify" onPress={handleSearchIconPress} />
+        <Appbar.Action
+          icon="magnify"
+          onPress={handleSearchIconPress}
+          size={screenWidth * 0.06}
+        />
       )}
     </Appbar.Header>
   );
@@ -76,6 +95,9 @@ const styles = StyleSheet.create({
   },
   content: {
     alignItems: 'center',
+  },
+  title: {
+    fontSize: screenWidth * 0.05,
   },
   searchContainer: {
     flex: 1,

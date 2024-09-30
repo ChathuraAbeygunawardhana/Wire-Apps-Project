@@ -14,7 +14,8 @@ const ProfileScreen = ({ navigation }) => {
   const [user, setUser] = useState({
     name: 'Demo User',
     email: 'demouser@testmail.com',
-    profilePicture: 'https://example.com/profile.jpg',
+    profilePicture:
+      'https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671122.jpg?w=740&t=st=1727610603~exp=1727611203~hmac=d37706e21bf17347aecda6eb56990b9f6ba680dc432f5a0a26aa46486b8405af',
   });
 
   return (

@@ -39,7 +39,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         <Header
           navigation={navigation}
           showSearchIcon={false}
-          title="Product details"
+          title="Product details         "
         />
         <ScrollView className="px-4 flex-1">
           <ProductImage imageUrl={product.mainImage} />

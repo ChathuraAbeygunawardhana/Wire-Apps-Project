@@ -12,7 +12,6 @@ import ProductImage from './ProductImage';
 import ProductInfo from './ProductInfo';
 import SizeSelector from './SizeSelector';
 import QuantitySelector from './QuantitySelector';
-import AddToCartButton from './AddToCartButton';
 import Header from '../../components/Header';
 import QuantitySection from './QuantitySection';
 import {
@@ -21,6 +20,7 @@ import {
   showWarningDialog,
   showSuccessDialog,
 } from './ProductDetailsUtils';
+import BottomButton from '../../components/BottomButton';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -69,10 +69,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
               price={product.price}
             />
           )}
-          <StyledText
-            className="text-base text-black mt-5"
-            style={{ textAlign: 'justify' }}
-          >
+          <StyledText className="text-base text-black mt-5 text-justify">
             {product.description}
           </StyledText>
           <View className="flex-row items-center mt-5">
@@ -81,7 +78,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
           </View>
           <View className="mb-5" />
         </ScrollView>
-        <AddToCartButton
+        <BottomButton
           onPress={() =>
             handleAddToCart(
               selectedSize,
@@ -92,7 +89,8 @@ const ProductDetailsScreen = ({ route, navigation }) => {
               showSuccessDialog
             )
           }
-          isOutOfStock={isOutOfStock}
+          disabled={isOutOfStock}
+          label="Add to Cart"
         />
       </StyledView>
     </AlertNotificationRoot>

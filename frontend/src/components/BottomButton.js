@@ -5,17 +5,17 @@ import { styled } from 'nativewind';
 
 const StyledView = styled(View);
 
-const AddToCartButton = ({ onPress, isOutOfStock }) => (
+const BottomButton = ({ onPress, disabled, label }) => (
   <StyledView className="px-3 pb-5">
     <Button
       mode="contained"
       onPress={onPress}
       className="bg-black text-white rounded-full w-full text-xl py-1"
-      disabled={isOutOfStock}
+      disabled={disabled}
     >
-      Add to Cart
+      {label}
     </Button>
   </StyledView>
 );
 
-export default AddToCartButton;
+export default BottomButton;

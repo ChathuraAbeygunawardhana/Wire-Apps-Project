@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import CustomAlert from './CustomAlert';
 import { calculateTotal, handleConfirmDelete, handleDelete } from './cartUtils';
 import { removeFromCart } from '../../redux/cartSlice';
 import CartHeader from './CartHeader';
 import TotalAmount from './TotalAmount';
-import CheckoutButton from './CheckoutButton';
 import CartItemList from './CartItemList';
+import BottomButton from '../../components/BottomButton';
 
 const CartScreen = ({ navigation }) => {
   const cartItems = useSelector((state) => state.cart.items);
@@ -25,7 +25,12 @@ const CartScreen = ({ navigation }) => {
         }
       />
       <TotalAmount cartItems={cartItems} calculateTotal={calculateTotal} />
-      <CheckoutButton />
+      <BottomButton
+        onPress={() => {
+          console.log('Checkout button pressed');
+        }}
+        label="Checkout"
+      />
       <CustomAlert
         visible={alertVisible}
         title="Remove Item"

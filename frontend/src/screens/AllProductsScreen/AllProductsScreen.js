@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import renderGridItem from '../../components/renderGridItem';
 import renderListItem from '../../components/renderListItem';
-import Header from '../../components/Header'; // Import the Header component
+import Header from '../../components/Header';
 import FilterSortBar from '../../components/FilterSortBar';
 import SortModal from '../../components/modals/SortModal';
 import FilterModal from '../../components/modals/FilterModal';

@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   ActivityIndicator,
   Dimensions,
-  StyleSheet,
 } from 'react-native';
 import renderGridItem from '../../components/renderGridItem';
 import renderListItem from '../../components/renderListItem';
@@ -22,6 +21,7 @@ import {
   applyFilters,
   discardFilters,
 } from '../../utils/productUtils';
+import styles from './AllproductsScreen.styles';
 
 const screenWidth = Dimensions.get('window').width;
 const itemWidth = (screenWidth - 48) / 2;
@@ -146,27 +146,5 @@ const AllProductsScreen = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  safeAreaView: {
-    flex: 1,
-    backgroundColor: '#f0f0f0',
-  },
-  mainView: {
-    flex: 1,
-    marginHorizontal: 12,
-  },
-  noProductsView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  noProductsText: {
-    fontSize: 14,
-  },
-  flatListContent: {
-    paddingBottom: 16,
-  },
-});
 
 export default AllProductsScreen;

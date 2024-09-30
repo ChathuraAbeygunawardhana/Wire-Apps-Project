@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Text,
   View,
-  FlatList,
   SafeAreaView,
   ActivityIndicator,
   Dimensions,
@@ -13,9 +12,7 @@ import Header from '../../components/Header';
 import FilterSortBar from '../../components/FilterSortBar';
 import SortModal from '../../components/modals/SortModal';
 import FilterModal from '../../components/modals/FilterModal';
-import LoadingComponent from '../../components/LoadingComponent';
-import ErrorView from '../../components/ErrorView';
-import NoProductsFound from '../../components/NoProductsFound';
+import ProductList from '../../components/ProductList';
 import {
   fetchProducts,
   sortProducts,
@@ -72,25 +69,14 @@ const AllProductsScreen = ({ navigation }) => {
           isListView={isListView}
           setIsListView={setIsListView}
         />
-        {isLoading ? (
-          <LoadingComponent />
-        ) : hasError ? (
-          <ErrorView />
-        ) : filteredProducts.length === 0 ? (
-          <NoProductsFound />
-        ) : (
-          <FlatList
-            key={isListView ? 'list' : 'grid'}
-            data={filteredProducts}
-            renderItem={
-              isListView ? renderListItemWrapper : renderGridItemWrapper
-            }
-            keyExtractor={(item) => item.id}
-            numColumns={isListView ? 1 : 2}
-            contentContainerStyle={styles.flatListContent}
-            showsVerticalScrollIndicator={false}
-          />
-        )}
+        <ProductList
+          isLoading={isLoading}
+          hasError={hasError}
+          filteredProducts={filteredProducts}
+          isListView={isListView}
+          renderListItemWrapper={renderListItemWrapper}
+          renderGridItemWrapper={renderGridItemWrapper}
+        />
       </View>
       <SortModal
         isSortModalVisible={isSortModalVisible}

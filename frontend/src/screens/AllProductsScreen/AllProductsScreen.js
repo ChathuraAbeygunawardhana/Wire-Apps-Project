@@ -15,6 +15,7 @@ import SortModal from '../../components/modals/SortModal';
 import FilterModal from '../../components/modals/FilterModal';
 import LoadingComponent from '../../components/LoadingComponent';
 import ErrorView from '../../components/ErrorView';
+import NoProductsFound from '../../components/NoProductsFound';
 import {
   fetchProducts,
   sortProducts,
@@ -76,11 +77,7 @@ const AllProductsScreen = ({ navigation }) => {
         ) : hasError ? (
           <ErrorView />
         ) : filteredProducts.length === 0 ? (
-          <View style={styles.noProductsView}>
-            <Text style={styles.noProductsText}>
-              No products were found matching your selection
-            </Text>
-          </View>
+          <NoProductsFound />
         ) : (
           <FlatList
             key={isListView ? 'list' : 'grid'}

@@ -8,18 +8,18 @@ import {
   AlertNotificationRoot,
 } from 'react-native-alert-notification';
 
-import ProductImage from './ProductImage';
-import ProductInfo from './ProductInfo';
-import SizeSelector from './SizeSelector';
-import QuantitySelector from './QuantitySelector';
+import ProductImage from './ProductDetailsScreenComponents/ProductImage';
+import ProductInfo from './ProductDetailsScreenComponents/ProductInfo';
+import SizeSelector from './ProductDetailsScreenComponents/SizeSelector';
+import QuantitySelector from './ProductDetailsScreenComponents/QuantitySelector';
 import Header from '../../components/Header';
-import QuantitySection from './QuantitySection';
+import QuantitySection from './ProductDetailsScreenComponents/QuantitySection';
 import {
   handleSizeChange,
   handleAddToCart,
   showWarningDialog,
   showSuccessDialog,
-} from './ProductDetailsUtils';
+} from './ProductDetailsScreenComponents/ProductDetailsUtils';
 import BottomButton from '../../components/BottomButton';
 
 const StyledView = styled(View);

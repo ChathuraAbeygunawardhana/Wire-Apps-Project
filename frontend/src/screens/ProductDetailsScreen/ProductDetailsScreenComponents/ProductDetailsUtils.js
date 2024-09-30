@@ -1,5 +1,5 @@
 import { Dialog } from 'react-native-alert-notification';
-import { addToCart } from '../../redux/cartSlice';
+import { addToCart } from '../../../redux/cartSlice';
 import { ALERT_TYPE } from 'react-native-alert-notification';
 
 export const handleSizeChange = (

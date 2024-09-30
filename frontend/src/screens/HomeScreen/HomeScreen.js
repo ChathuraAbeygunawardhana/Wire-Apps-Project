@@ -1,15 +1,9 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Animated,
-  Easing,
-  TouchableOpacity,
-} from 'react-native';
 import React, { useEffect, useRef } from 'react';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Animated, Easing } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AnimatedImage from './AnimatedImage';
+import LatestArrivalsButton from './LatestArrivalsButton';
+import styles from './HomeScree.styles';
 
 const Home = () => {
   const navigation = useNavigation();
@@ -29,21 +23,9 @@ const Home = () => {
   };
 
   return (
-    <View className="flex-1 justify-center items-center">
-      <Animated.Image
-        source={{
-          uri: 'https://i.ibb.co/D9Q1S0z/Classics.png',
-        }}
-        className="w-full h-full"
-        style={{ opacity: fadeAnim }}
-      />
-      <TouchableOpacity
-        className="absolute bottom-24 p-2 bg-black rounded-lg flex-row items-center"
-        onPress={handleLatestArrivalsPress}
-      >
-        <Text className="text-white text-lg mr-1">Latest Arrivals</Text>
-        <Ionicons name="arrow-forward" size={16} color="#fff" />
-      </TouchableOpacity>
+    <View style={styles.container}>
+      <AnimatedImage fadeAnim={fadeAnim} />
+      <LatestArrivalsButton onPress={handleLatestArrivalsPress} />
     </View>
   );
 };

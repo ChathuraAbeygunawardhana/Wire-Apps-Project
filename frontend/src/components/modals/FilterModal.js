@@ -5,9 +5,9 @@ import {
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  TextInput,
   Switch,
 } from 'react-native';
-import MultiSlider from '@ptomasroos/react-native-multi-slider';
 
 const FilterModal = ({
   isFilterModalVisible,
@@ -37,25 +37,23 @@ const FilterModal = ({
             <Text className="text-lg font-bold mb-4 text-center">Filter</Text>
             <Text className="text-sm font-semibold mb-2">Price Range</Text>
             <View className="flex-row items-center mb-4">
-              <Text className="text-sm flex-1">
-                ${priceRange[0].toFixed(2)} - ${priceRange[1].toFixed(2)}
-              </Text>
-              <MultiSlider
-                values={priceRange}
-                sliderLength={180}
-                onValuesChange={(values) => setPriceRange(values)}
-                min={0}
-                max={100}
-                step={1}
-                allowOverlap={false}
-                snapped
-                selectedStyle={{
-                  backgroundColor: 'black',
-                }}
-                markerStyle={{
-                  backgroundColor: 'black',
-                }}
-                style={{ alignSelf: 'flex-end' }}
+              <TextInput
+                className="flex-1 border border-gray-300 rounded p-2 mr-2"
+                keyboardType="numeric"
+                value={priceRange[0] !== null ? priceRange[0].toString() : ''}
+                onChangeText={(value) =>
+                  setPriceRange([value ? parseFloat(value) : 0, priceRange[1]])
+                }
+                placeholder="Min Price"
+              />
+              <TextInput
+                className="flex-1 border border-gray-300 rounded p-2"
+                keyboardType="numeric"
+                value={priceRange[1] !== null ? priceRange[1].toString() : ''}
+                onChangeText={(value) =>
+                  setPriceRange([priceRange[0], value ? parseFloat(value) : 0])
+                }
+                placeholder="Max Price"
               />
             </View>
             <Text className="text-sm font-semibold mb-2 mt-2">Colours</Text>

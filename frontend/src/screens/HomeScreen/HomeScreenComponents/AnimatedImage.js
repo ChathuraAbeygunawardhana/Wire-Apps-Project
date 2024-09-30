@@ -1,6 +1,6 @@
 import React from 'react';
 import { Animated } from 'react-native';
-import styles from './HomeScree.styles';
+import styles from '../HomeScree.styles';
 
 const AnimatedImage = ({ fadeAnim }) => (
   <Animated.Image

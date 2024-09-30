@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Animated, Easing } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AnimatedImage from './AnimatedImage';
-import LatestArrivalsButton from './LatestArrivalsButton';
+import AnimatedImage from './HomeScreenComponents/AnimatedImage';
+import LatestArrivalsButton from './HomeScreenComponents/LatestArrivalsButton';
 import styles from './HomeScree.styles';
 
 const Home = () => {

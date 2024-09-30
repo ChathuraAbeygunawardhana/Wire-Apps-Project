@@ -22,7 +22,7 @@ const SortModal = ({
       <View className="flex-1 justify-end">
         <View className="absolute top-0 left-0 right-0 bottom-0 bg-gray-800 opacity-50" />
         <View className="bg-white p-4 rounded-t-xl border border-gray-300">
-          <Text className="text-lg font-bold mb-4">Sort By</Text>
+          <Text className="text-lg font-bold mb-4 text-center">Sort By</Text>
           <TouchableOpacity
             className="p-2"
             onPress={() => sortProducts('lowToHigh')}

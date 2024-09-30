@@ -3,10 +3,8 @@ import { View, ScrollView, Text } from 'react-native';
 import { Appbar } from 'react-native-paper';
 import { styled } from 'nativewind';
 import { useDispatch } from 'react-redux';
-import { addToCart } from '../../redux/cartSlice';
 import {
   ALERT_TYPE,
-  Dialog,
   AlertNotificationRoot,
 } from 'react-native-alert-notification';
 
@@ -16,6 +14,13 @@ import SizeSelector from './SizeSelector';
 import QuantitySelector from './QuantitySelector';
 import AddToCartButton from './AddToCartButton';
 import Header from '../../components/Header';
+import QuantitySection from './QuantitySection';
+import {
+  handleSizeChange,
+  handleAddToCart,
+  showWarningDialog,
+  showSuccessDialog,
+} from './ProductDetailsUtils';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -27,61 +32,6 @@ const ProductDetailsScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
 
   const isOutOfStock = product.stockStatus !== 'IN STOCK';
-
-  const handleSizeChange = (size) => {
-    if (isOutOfStock) {
-      showWarningDialog('Product is out of stock');
-    } else {
-      setSelectedSize(size);
-    }
-  };
-
-  const handleAddToCart = () => {
-    if (!selectedSize) {
-      showWarningDialog('Please select a size');
-      return;
-    }
-
-    dispatch(
-      addToCart({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        size: selectedSize,
-        quantity: quantity,
-        image: product.mainImage,
-        color: product.colour,
-      })
-    );
-
-    showSuccessDialog('Item was added to cart');
-  };
-
-  const showWarningDialog = (message) => {
-    Dialog.show({
-      type: ALERT_TYPE.WARNING,
-      title: 'Warning',
-      textBody: message,
-      button: 'OK',
-      titleStyle: { color: 'black' },
-      textBodyStyle: { color: 'black' },
-      buttonStyle: { backgroundColor: 'black' },
-      buttonTextStyle: { color: 'white' },
-    });
-  };
-
-  const showSuccessDialog = (message) => {
-    Dialog.show({
-      type: ALERT_TYPE.SUCCESS,
-      title: 'Added to cart',
-      textBody: message,
-      button: 'OK',
-      titleStyle: { color: 'black' },
-      textBodyStyle: { color: 'black' },
-      buttonStyle: { backgroundColor: 'black' },
-      buttonTextStyle: { color: 'white' },
-    });
-  };
 
   return (
     <AlertNotificationRoot>
@@ -97,7 +47,14 @@ const ProductDetailsScreen = ({ route, navigation }) => {
           <SizeSelector
             sizes={product.sizes}
             selectedSize={selectedSize}
-            onSizeChange={handleSizeChange}
+            onSizeChange={(size) =>
+              handleSizeChange(
+                size,
+                isOutOfStock,
+                setSelectedSize,
+                showWarningDialog
+              )
+            }
             isOutOfStock={isOutOfStock}
           />
           <QuantitySelector
@@ -106,18 +63,11 @@ const ProductDetailsScreen = ({ route, navigation }) => {
             isOutOfStock={isOutOfStock}
           />
           {selectedSize && (
-            <View className="flex-row justify-between items-center mt-5">
-              <StyledText className="text-base">
-                {`Size ${selectedSize} x ${quantity}`}
-              </StyledText>
-              <StyledText className="text-base font-bold">
-                {`${(product.price.amount * quantity).toFixed(2)} ${
-                  product.price.currency === 'GBP'
-                    ? '£'
-                    : product.price.currency
-                }`}
-              </StyledText>
-            </View>
+            <QuantitySection
+              selectedSize={selectedSize}
+              quantity={quantity}
+              price={product.price}
+            />
           )}
           <StyledText
             className="text-base text-black mt-5"
@@ -132,7 +82,16 @@ const ProductDetailsScreen = ({ route, navigation }) => {
           <View className="mb-5" />
         </ScrollView>
         <AddToCartButton
-          onPress={handleAddToCart}
+          onPress={() =>
+            handleAddToCart(
+              selectedSize,
+              product,
+              quantity,
+              dispatch,
+              showWarningDialog,
+              showSuccessDialog
+            )
+          }
           isOutOfStock={isOutOfStock}
         />
       </StyledView>

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, Image, ScrollView } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
 import { styled } from 'nativewind';
 import { useDispatch } from 'react-redux';
-import Header from '../../components/Header'; // Import the Header component
+import Header from '../../components/Header';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -28,12 +28,10 @@ const ProfileScreen = ({ navigation }) => {
         products={[]}
         setFilteredProducts={() => {}}
         showSearchIcon={false}
-        showBackButton={false} // Set showBackButton to false
+        showBackButton={false}
         title="Profile"
       />
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
-      >
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <StyledView className="p-4 items-center">
           <StyledImage
             source={{
@@ -51,14 +49,14 @@ const ProfileScreen = ({ navigation }) => {
           <Button
             mode="contained"
             className="mt-4 bg-black w-64"
-            labelStyle={{ color: 'white' }}
+            labelStyle={styles.buttonLabelContained}
           >
             Edit Profile
           </Button>
           <Button
             mode="outlined"
             className="mt-4 border-black w-64"
-            labelStyle={{ color: 'black' }}
+            labelStyle={styles.buttonLabelOutlined}
           >
             Logout
           </Button>
@@ -67,5 +65,18 @@ const ProfileScreen = ({ navigation }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  buttonLabelContained: {
+    color: 'white',
+  },
+  buttonLabelOutlined: {
+    color: 'black',
+  },
+});
 
 export default ProfileScreen;

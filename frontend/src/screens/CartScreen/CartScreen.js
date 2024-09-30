@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import CustomAlert from './CustomAlert';
-import { calculateTotal, handleConfirmDelete, handleDelete } from './cartUtils';
+import CustomAlert from './CartScreenComponents/CustomAlert';
+import {
+  calculateTotal,
+  handleConfirmDelete,
+  handleDelete,
+} from './CartScreenComponents/cartUtils';
 import { removeFromCart } from '../../redux/cartSlice';
 import Header from '../../components/Header';
-import TotalAmount from './TotalAmount';
-import CartItemList from './CartItemList';
+import TotalAmount from './CartScreenComponents/TotalAmount';
+import CartItemList from './CartScreenComponents/CartItemList';
 import BottomButton from '../../components/BottomButton';
 
 const CartScreen = ({ navigation }) => {

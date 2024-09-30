@@ -2,7 +2,7 @@ import React from 'react';
 import { FlatList, View, Text } from 'react-native';
 import { useDispatch } from 'react-redux';
 import CartItem from './CartItem';
-import { updateQuantity } from '../../redux/cartSlice';
+import { updateQuantity } from '../../../redux/cartSlice';
 
 const CartItemList = ({ cartItems, onDelete }) => {
   const dispatch = useDispatch();

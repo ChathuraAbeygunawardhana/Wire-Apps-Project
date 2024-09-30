@@ -1,4 +1,4 @@
-import { removeFromCart } from '../../redux/cartSlice';
+import { removeFromCart } from '../../../redux/cartSlice';
 
 export const calculateTotal = (cartItems) => {
   return cartItems

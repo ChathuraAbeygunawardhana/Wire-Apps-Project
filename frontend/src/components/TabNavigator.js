@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import { selectTotalItems } from '../redux/cartSlice';
-import Home from '../screens/HomePage/Home';
+import Home from '../screens/HomeScreen/HomeScreen';
 import AllProductsStack from './AllProductsStack';
 import CartScreen from '../screens/CartScreen/CartScreen';
 import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';

@@ -15,6 +15,7 @@ import ProductInfo from './ProductInfo';
 import SizeSelector from './SizeSelector';
 import QuantitySelector from './QuantitySelector';
 import AddToCartButton from './AddToCartButton';
+import Header from '../../components/Header';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -85,13 +86,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
   return (
     <AlertNotificationRoot>
       <StyledView className="flex-1 bg-white">
-        <Appbar.Header className="bg-white h-14">
-          <Appbar.BackAction onPress={() => navigation.goBack()} />
-          <Appbar.Content
-            title="Product Details          "
-            className="items-center"
-          />
-        </Appbar.Header>
+        <Header navigation={navigation} />
         <ScrollView className="px-4 flex-1">
           <ProductImage imageUrl={product.mainImage} />
           <ProductInfo product={product} />

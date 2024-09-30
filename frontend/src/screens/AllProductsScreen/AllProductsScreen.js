@@ -88,6 +88,7 @@ const AllProductsScreen = ({ navigation }) => {
             keyExtractor={(item) => item.id}
             numColumns={isListView ? 1 : 2}
             contentContainerStyle={styles.flatListContent}
+            showsVerticalScrollIndicator={false}
           />
         )}
       </View>

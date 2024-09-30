@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, TextInput, TouchableOpacity } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Appbar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -11,6 +11,8 @@ const Header = ({
   setSearchQuery,
   products,
   setFilteredProducts,
+  showSearchIcon = true,
+  title = 'Shoes',
 }) => {
   const searchInputRef = useRef(null);
 
@@ -39,28 +41,16 @@ const Header = ({
   };
 
   return (
-    <Appbar.Header className="bg-white">
+    <Appbar.Header style={styles.header}>
       <Appbar.BackAction onPress={() => navigation.goBack()} />
       {!isSearchBarVisible && (
-        <Appbar.Content title="Shoes" className="items-center" />
+        <Appbar.Content title={title} style={styles.content} />
       )}
       {isSearchBarVisible && (
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            alignItems: 'center',
-            backgroundColor: 'white',
-            borderRadius: 5,
-            borderColor: 'lightgrey',
-            borderWidth: 1,
-            paddingHorizontal: 10,
-            marginRight: 10,
-          }}
-        >
+        <View style={styles.searchContainer}>
           <TextInput
             ref={searchInputRef}
-            style={{ flex: 1 }}
+            style={styles.searchInput}
             placeholder="Search"
             value={searchQuery}
             onChangeText={handleSearch}
@@ -70,9 +60,34 @@ const Header = ({
           </TouchableOpacity>
         </View>
       )}
-      <Appbar.Action icon="magnify" onPress={handleSearchIconPress} />
+      {showSearchIcon && (
+        <Appbar.Action icon="magnify" onPress={handleSearchIconPress} />
+      )}
     </Appbar.Header>
   );
 };
+
+const styles = StyleSheet.create({
+  header: {
+    backgroundColor: 'white',
+  },
+  content: {
+    alignItems: 'center',
+  },
+  searchContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 5,
+    borderColor: 'lightgrey',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    marginRight: 10,
+  },
+  searchInput: {
+    flex: 1,
+  },
+});
 
 export default Header;

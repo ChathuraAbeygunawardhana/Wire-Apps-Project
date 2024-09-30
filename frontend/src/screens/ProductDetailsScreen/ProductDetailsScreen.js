@@ -86,7 +86,11 @@ const ProductDetailsScreen = ({ route, navigation }) => {
   return (
     <AlertNotificationRoot>
       <StyledView className="flex-1 bg-white">
-        <Header navigation={navigation} />
+        <Header
+          navigation={navigation}
+          showSearchIcon={false}
+          title="Product details"
+        />
         <ScrollView className="px-4 flex-1">
           <ProductImage imageUrl={product.mainImage} />
           <ProductInfo product={product} />

@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+  createStackNavigator,
+  TransitionPresets,
+} from '@react-navigation/stack';
 import { Provider } from 'react-redux';
 import { store } from './src/redux/store';
 import LoginScreen from './src/screens/LoginScreen/LoginScreen';
@@ -14,7 +17,10 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName="Login"
-          screenOptions={{ headerShown: false }}
+          screenOptions={{
+            headerShown: false,
+            ...TransitionPresets.ModalSlideFromBottomIOS,
+          }}
         >
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Main" component={TabNavigator} />

@@ -1,5 +1,11 @@
 # Wire-Apps-Project
 
+## Demo
+
+Here is a demonstration of this application:
+
+[![Watch the video](https://img.youtube.com/vi/oOVcM_b3-Zk/0.jpg)](https://youtu.be/oOVcM_b3-Zk)
+
 ## Getting Started
 
 Follow these instructions to get this React Native app running on your local machine.

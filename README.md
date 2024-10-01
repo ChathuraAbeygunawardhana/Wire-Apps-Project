@@ -68,3 +68,5 @@ I used TailwindCSS - NativeWind for this project to leverage utility-first CSS f
 ## Author
 
 Chathura Abeygunawardhana
+
+[Email](mailto:chathuraabeygunawardhana@gmail.com)

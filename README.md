@@ -51,7 +51,7 @@ I used Expo because it's easy to implement and the development process is faster
 
 ### Redux
 
-I use Redux for state management because it provides a predictable state container, making it easier to manage and debug the application state.
+I used Redux for state management because it provides a predictable state container, making it easier to manage and debug the application state.
 
 ### TailwindCSS - NativeWind
 

@@ -4,7 +4,9 @@
 
 Here is a demonstration of this application:
 
-[![Watch the video](https://img.youtube.com/vi/oOVcM_b3-Zk/0.jpg)](https://youtu.be/oOVcM_b3-Zk)
+<a href="https://youtu.be/oOVcM_b3-Zk" target="_blank">
+  <img src="https://img.youtube.com/vi/oOVcM_b3-Zk/0.jpg" alt="Watch the video">
+</a>
 
 ## Getting Started
 

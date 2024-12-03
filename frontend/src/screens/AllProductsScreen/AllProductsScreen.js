@@ -385,7 +385,7 @@ const AllProductsScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f0f0f0' }}>
       <Appbar.Header className="bg-white">
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
+        <Appbar.BackAction onPress={() => navigation.navigate('SignIn')} />
         {!isSearchBarVisible && (
           <Appbar.Content title="Shoes" className="items-center" />
         )}

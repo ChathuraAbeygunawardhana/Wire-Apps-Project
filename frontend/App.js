@@ -35,6 +35,11 @@ const AllProductsStack = () => (
         ...TransitionPresets.ScaleFromCenterAndroid,
       }}
     />
+    <Stack.Screen
+      name="SignIn"
+      component={SignInScreen}
+      options={{ headerShown: false }}
+    />
   </Stack.Navigator>
 );
 

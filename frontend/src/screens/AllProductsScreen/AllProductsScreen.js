@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 import { Appbar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
-import MultiSlider from '@ptomasroos/react-native-multi-slider';
 
 const AllProductsScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
@@ -252,23 +251,6 @@ const AllProductsScreen = ({ navigation }) => {
               <Text className="text-sm flex-1">
                 ${priceRange[0].toFixed(2)} - ${priceRange[1].toFixed(2)}
               </Text>
-              <MultiSlider
-                values={priceRange}
-                sliderLength={180}
-                onValuesChange={(values) => setPriceRange(values)}
-                min={0}
-                max={100}
-                step={1}
-                allowOverlap={false}
-                snapped
-                selectedStyle={{
-                  backgroundColor: 'black',
-                }}
-                markerStyle={{
-                  backgroundColor: 'black',
-                }}
-                style={{ alignSelf: 'flex-end' }}
-              />
             </View>
             <Text className="text-sm font-semibold mb-2 mt-2">Colours</Text>
             <View className="flex-row flex-wrap justify-between mb-2">

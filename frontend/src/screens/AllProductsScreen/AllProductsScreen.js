@@ -473,6 +473,7 @@ const AllProductsScreen = ({ navigation }) => {
             keyExtractor={(item) => item.id}
             numColumns={isListView ? 1 : 2}
             contentContainerStyle={{ paddingBottom: 16 }}
+            showsVerticalScrollIndicator={false}
           />
         )}
       </View>

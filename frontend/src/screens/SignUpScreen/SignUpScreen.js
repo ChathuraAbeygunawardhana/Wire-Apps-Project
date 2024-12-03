@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity } from 'react-native';
 
@@ -14,7 +13,7 @@ const SignUpScreen = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', padding: 16 }}>
-      <Text style={{ fontSize: 24, marginBottom: 16 }}>Sign Up</Text>
+      <Text style={{ fontSize: 24, marginBottom: 16, textAlign: 'center' }}>Create Account</Text>
       <TextInput
         placeholder="Email"
         value={email}

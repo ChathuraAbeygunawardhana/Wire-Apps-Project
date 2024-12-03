@@ -158,6 +158,7 @@ const SignUpScreen = () => {
               padding: 12,
               borderRadius: 24,
               alignItems: 'center',
+              marginTop: 24, // Added marginTop to move the button lower
             }}
           >
             <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
@@ -165,7 +166,7 @@ const SignUpScreen = () => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
-            <Text style={{ marginTop: 16, textAlign: 'center' }}>
+            <Text style={{ marginTop: 24, textAlign: 'center' }}> {/* Increased marginTop */}
               <Text style={{ color: 'grey' }}>Already have an account? </Text>
               <Text style={{ color: 'black', fontWeight: 'bold' }}>
                 Sign In

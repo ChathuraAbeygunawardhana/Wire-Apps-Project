@@ -84,7 +84,6 @@ const SignInScreen = () => {
           </Text>
           <Text style={{ marginBottom: 8 }}>Email</Text>
           <TextInput
-            placeholder="Email"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -102,7 +101,6 @@ const SignInScreen = () => {
           <Text style={{ marginBottom: 8 }}>Password</Text>
           <View style={{ marginBottom: 16, position: 'relative' }}>
             <TextInput
-              placeholder="Password"
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
@@ -133,12 +131,13 @@ const SignInScreen = () => {
               padding: 12,
               borderRadius: 50,
               alignItems: 'center',
+              marginTop: 24, // Added marginTop to move the button lower
             }}
           >
             <Text style={{ color: 'white', fontSize: 16 }}>Sign In</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-            <Text style={{ marginTop: 16, textAlign: 'center' }}>
+            <Text style={{ marginTop: 24, textAlign: 'center' }}> {/* Increased marginTop */}
               <Text style={{ color: 'grey' }}>Don't have an account? </Text>
               <Text style={{ color: 'black', fontWeight: 'bold' }}>
                 Sign Up

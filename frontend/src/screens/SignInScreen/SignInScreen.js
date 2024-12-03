@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   View,
   Text,
@@ -12,21 +12,20 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { UserContext } from '../../context/UserContext';
 
 const SignInScreen = () => {
   const navigation = useNavigation();
-  const [email, setEmail] = useState('example@gmail.com');
+  const { setUser } = useContext(UserContext);
+  const [username, setUsername] = useState('exampleUser');
   const [password, setPassword] = useState('Helloworld123@@@');
   const [showPassword, setShowPassword] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (email === '') {
-      return 'Email is required';
-    } else if (!emailRegex.test(email)) {
-      return 'Invalid email format';
+  const validateUsername = (username) => {
+    if (username === '') {
+      return 'Username is required';
     }
     return '';
   };
@@ -51,16 +50,17 @@ const SignInScreen = () => {
   };
 
   const handleSignIn = () => {
-    const emailValidationError = validateEmail(email);
+    const usernameValidationError = validateUsername(username);
     const passwordValidationError = validatePassword(password);
-    if (emailValidationError || passwordValidationError) {
-      setEmailError(emailValidationError);
+    if (usernameValidationError || passwordValidationError) {
+      setEmailError(usernameValidationError);
       setPasswordError(passwordValidationError);
       return;
     }
     setEmailError('');
     setPasswordError('');
-    navigation.replace('MainApp');
+    setUser({ username, password });
+    navigation.replace('MainApp', { username });
   };
 
   return (
@@ -82,11 +82,10 @@ const SignInScreen = () => {
           <Text style={{ fontSize: 24, marginBottom: 40, textAlign: 'center' }}>
             Sign In
           </Text>
-          <Text style={{ marginBottom: 8 }}>Email</Text>
+          <Text style={{ marginBottom: 8 }}>Username</Text>
           <TextInput
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
+            value={username}
+            onChangeText={setUsername}
             autoCapitalize="none"
             style={{
               marginBottom: 16,

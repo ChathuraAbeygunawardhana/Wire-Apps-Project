@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   View,
   Text,
@@ -12,26 +12,23 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { UserContext } from '../../context/UserContext';
 
 const SignUpScreen = () => {
   const navigation = useNavigation();
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const { setUser } = useContext(UserContext);
+  const [username, setUsername] = useState('Chathura');
+  const [password, setPassword] = useState('Helloworld123@@@');
+  const [confirmPassword, setConfirmPassword] = useState('Helloworld123@@@');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [emailError, setEmailError] = useState('');
+  const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
-  const [usernameError, setUsernameError] = useState('');
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (email === '') {
-      return 'Email is required';
-    } else if (!emailRegex.test(email)) {
-      return 'Invalid email format';
+  const validateUsername = (username) => {
+    if (username === '') {
+      return 'Username is required';
     }
     return '';
   };
@@ -60,29 +57,20 @@ const SignUpScreen = () => {
     return '';
   };
 
-  const validateUsername = (username) => {
-    if (username === '') {
-      return 'Username is required';
-    }
-    return '';
-  };
-
   const handleSignUp = () => {
     const usernameValidationError = validateUsername(username);
-    const emailValidationError = validateEmail(email);
     const passwordValidationError = validatePassword(password);
     const confirmPasswordValidationError = validateConfirmPassword(password, confirmPassword);
-    if (usernameValidationError || emailValidationError || passwordValidationError || confirmPasswordValidationError) {
+    if (usernameValidationError || passwordValidationError || confirmPasswordValidationError) {
       setUsernameError(usernameValidationError);
-      setEmailError(emailValidationError);
       setPasswordError(passwordValidationError);
       setConfirmPasswordError(confirmPasswordValidationError);
       return;
     }
     setUsernameError('');
-    setEmailError('');
     setPasswordError('');
     setConfirmPasswordError('');
+    setUser({ username, password });
     navigation.replace('MainApp', { username });
   };
 
@@ -119,22 +107,6 @@ const SignUpScreen = () => {
             }}
           />
           {usernameError ? <Text style={{ color: 'red', marginBottom: 15, textAlign: 'right' }}>{usernameError}</Text> : null}
-          <Text style={{ marginBottom: 8 }}>Email</Text>
-          <TextInput
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            style={{
-              marginBottom: 16,
-              padding: 8,
-              backgroundColor: 'white',
-              borderRadius: 24,
-              borderColor: 'rgba(128, 128, 128, 0.5)', // Reduced opacity of border color
-              borderWidth: 1,
-            }}
-          />
-          {emailError ? <Text style={{ color: 'red', marginBottom: 15, textAlign: 'right' }}>{emailError}</Text> : null}
           <Text style={{ marginBottom: 8 }}>Password</Text>
           <View style={{ marginBottom: 16, position: 'relative' }}>
             <TextInput

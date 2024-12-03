@@ -16,32 +16,38 @@ import ProfileScreen from './src/screens/ProfileScreen/ProfileScreen';
 import SignInScreen from './src/screens/SignInScreen/SignInScreen';
 import SignUpScreen from './src/screens/SignUpScreen/SignUpScreen';
 import { View, Text } from 'react-native';
+import { UserProvider } from './src/context/UserContext';
+import { ItemClickProvider } from './src/context/ItemClickContext';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const AllProductsStack = () => (
-  <Stack.Navigator initialRouteName="AllProducts">
-    <Stack.Screen
-      name="AllProducts"
-      component={AllProductsScreen}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name="ProductDetails"
-      component={ProductDetailsScreen}
-      options={{
-        headerShown: false,
-        ...TransitionPresets.ScaleFromCenterAndroid,
-      }}
-    />
-    <Stack.Screen
-      name="SignIn"
-      component={SignInScreen}
-      options={{ headerShown: false }}
-    />
-  </Stack.Navigator>
-);
+const AllProductsStack = ({ route }) => {
+  const { username } = route.params || {};
+  return (
+    <Stack.Navigator initialRouteName="AllProducts">
+      <Stack.Screen
+        name="AllProducts"
+        component={AllProductsScreen}
+        options={{ headerShown: false }}
+        initialParams={{ username }}
+      />
+      <Stack.Screen
+        name="ProductDetails"
+        component={ProductDetailsScreen}
+        options={{
+          headerShown: false,
+          ...TransitionPresets.ScaleFromCenterAndroid,
+        }}
+      />
+      <Stack.Screen
+        name="SignIn"
+        component={SignInScreen}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+};
 
 const TabNavigator = ({ route }) => {
   const totalItems = useSelector(selectTotalItems);
@@ -52,9 +58,7 @@ const TabNavigator = ({ route }) => {
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: {
-          height: 60,
-          paddingTop: 5,
-          paddingBottom: 5,
+          display: 'none', // Hide the bottom tabs bar
         },
         tabBarIcon: ({ color, size }) => {
           let iconName;
@@ -108,25 +112,29 @@ const TabNavigator = ({ route }) => {
 const App = () => {
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="SignIn">
-          <Stack.Screen
-            name="SignIn"
-            component={SignInScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="SignUp"
-            component={SignUpScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="MainApp"
-            component={TabNavigator}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <UserProvider>
+        <ItemClickProvider>
+          <NavigationContainer>
+            <Stack.Navigator initialRouteName="SignIn">
+              <Stack.Screen
+                name="SignIn"
+                component={SignInScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="SignUp"
+                component={SignUpScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="MainApp"
+                component={TabNavigator}
+                options={{ headerShown: false }}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </ItemClickProvider>
+      </UserProvider>
     </Provider>
   );
 };

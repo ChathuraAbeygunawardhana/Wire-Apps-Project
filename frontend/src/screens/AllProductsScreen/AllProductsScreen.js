@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import {
   Text,
   View,
@@ -13,11 +13,15 @@ import {
   TextInput,
   Switch,
 } from 'react-native';
-import { Appbar } from 'react-native-paper';
+import { Appbar, FAB } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
+import { UserContext } from '../../context/UserContext';
+import { ItemClickContext } from '../../context/ItemClickContext';
 
-const AllProductsScreen = ({ navigation, route }) => {
-  const { username } = route.params || {};
+const AllProductsScreen = ({ navigation }) => {
+  const { user } = useContext(UserContext);
+  const username = user?.username;
+  const { itemPressCount, handleItemPress } = useContext(ItemClickContext);
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [isListView, setIsListView] = useState(false);
@@ -128,7 +132,7 @@ const AllProductsScreen = ({ navigation, route }) => {
       item.price.currency === 'GBP' ? '£' : item.price.currency;
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate('ProductDetails', { product: item })}
+        onPress={handleItemPress}
         style={{
           width: itemWidth,
           marginBottom: 16,
@@ -174,7 +178,7 @@ const AllProductsScreen = ({ navigation, route }) => {
       item.price.currency === 'GBP' ? '£' : item.price.currency;
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate('ProductDetails', { product: item })}
+        onPress={handleItemPress}
         className="flex-row mb-4 bg-white rounded-lg shadow-md shadow-black/50 px-5"
       >
         <Image
@@ -339,7 +343,6 @@ const AllProductsScreen = ({ navigation, route }) => {
                 marginVertical: 10,
               }}
             />
-            {/* Divider */}
             <View className="flex-row justify-between mt-4">
               <TouchableOpacity
                 className="bg-white border border-black px-4 py-2 rounded-full"
@@ -387,9 +390,7 @@ const AllProductsScreen = ({ navigation, route }) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f0f0f0' }}>
       <Appbar.Header className="bg-white">
         <Appbar.BackAction onPress={() => navigation.navigate('SignIn')} />
-        {!isSearchBarVisible && (
-          <Appbar.Content title={username || "Shoes"} className="items-center" />
-        )}
+        <Appbar.Content title={username || 'Shoes'} className="items-center" />
         {isSearchBarVisible && (
           <View
             style={{
@@ -416,35 +417,13 @@ const AllProductsScreen = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
         )}
-        <Appbar.Action icon="magnify" onPress={handleSearchIconPress} />
+        <Appbar.Action
+          icon="magnify"
+          onPress={handleSearchIconPress}
+          style={{ opacity: 0 }}
+        />
       </Appbar.Header>
-      <View className="flex-1 mx-3">
-        <View className="flex-row justify-between items-center mb-3 mt-3 p-2 bg-white rounded-lg shadow-md shadow-black/50">
-          <TouchableOpacity
-            className="flex-row items-center"
-            onPress={() => setIsFilterModalVisible(true)}
-          >
-            <Ionicons name="filter" size={16} color="black" />
-            <Text className="ml-2 text-sm">Filter</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="flex-row items-center"
-            onPress={() => setIsSortModalVisible(true)}
-          >
-            <Ionicons name="swap-vertical" size={16} color="black" />
-            <Text className="ml-2 text-sm">{selectedSortOption}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="flex-row items-center"
-            onPress={() => setIsListView(!isListView)}
-          >
-            <Ionicons
-              name={isListView ? 'grid' : 'list'}
-              size={20}
-              color="black"
-            />
-          </TouchableOpacity>
-        </View>
+      <View className="flex-1 mx-3 mt-4">
         {isLoading ? (
           <View
             style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
@@ -478,6 +457,23 @@ const AllProductsScreen = ({ navigation, route }) => {
           />
         )}
       </View>
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          margin: 16,
+          right: 0,
+          bottom: 0,
+          left: 0,
+          alignSelf: 'center',
+          backgroundColor: 'black',
+          padding: 16,
+          borderRadius: 28,
+          alignItems: 'center',
+        }}
+        onPress={() => {}}
+      >
+        <Text style={{ color: 'white' }}>{`Items Pressed: ${itemPressCount}`}</Text>
+      </TouchableOpacity>
       {renderSortModal()}
       {renderFilterModal()}
     </SafeAreaView>

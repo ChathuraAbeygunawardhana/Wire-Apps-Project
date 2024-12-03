@@ -104,16 +104,24 @@ const SignUpScreen = () => {
               padding: 8,
               backgroundColor: 'white',
               borderRadius: 24,
+              borderColor: 'rgba(128, 128, 128, 0.5)', // Reduced opacity of border color
+              borderWidth: 1,
             }}
           />
-          {emailError ? <Text style={{ color: 'red', marginBottom: 15 }}>{emailError}</Text> : null}
+          {emailError ? <Text style={{ color: 'red', marginBottom: 15, textAlign: 'right' }}>{emailError}</Text> : null}
           <Text style={{ marginBottom: 8 }}>Password</Text>
           <View style={{ marginBottom: 16, position: 'relative' }}>
             <TextInput
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
-              style={{ padding: 8, backgroundColor: 'white', borderRadius: 24 }}
+              style={{ 
+                padding: 8, 
+                backgroundColor: 'white', 
+                borderRadius: 24,
+                borderColor: 'rgba(128, 128, 128, 0.5)', // Reduced opacity of border color
+                borderWidth: 1,
+              }}
             />
             {password.length > 0 && (
               <TouchableOpacity
@@ -128,14 +136,20 @@ const SignUpScreen = () => {
               </TouchableOpacity>
             )}
           </View>
-          {passwordError ? <Text style={{ color: 'red', marginBottom: 15 }}>{passwordError}</Text> : null}
+          {passwordError ? <Text style={{ color: 'red', marginBottom: 15, textAlign: 'right' }}>{passwordError}</Text> : null}
           <Text style={{ marginBottom: 8 }}>Confirm Password</Text>
           <View style={{ marginBottom: 16, position: 'relative' }}>
             <TextInput
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               secureTextEntry={!showConfirmPassword}
-              style={{ padding: 8, backgroundColor: 'white', borderRadius: 24 }}
+              style={{ 
+                padding: 8, 
+                backgroundColor: 'white', 
+                borderRadius: 24,
+                borderColor: 'rgba(128, 128, 128, 0.5)', // Reduced opacity of border color
+                borderWidth: 1,
+              }}
             />
             {confirmPassword.length > 0 && (
               <TouchableOpacity
@@ -150,7 +164,7 @@ const SignUpScreen = () => {
               </TouchableOpacity>
             )}
           </View>
-          {confirmPasswordError ? <Text style={{ color: 'red', marginBottom: 15 }}>{confirmPasswordError}</Text> : null}
+          {confirmPasswordError ? <Text style={{ color: 'red', marginBottom: 15, textAlign: 'right' }}>{confirmPasswordError}</Text> : null}
           <TouchableOpacity
             onPress={handleSignUp}
             style={{

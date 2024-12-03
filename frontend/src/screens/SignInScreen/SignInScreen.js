@@ -93,10 +93,12 @@ const SignInScreen = () => {
               padding: 8,
               backgroundColor: 'white',
               borderRadius: 50,
+              borderColor: 'rgba(128, 128, 128, 0.5)', // Reduced opacity of border color
+              borderWidth: 1,
             }}
           />
           {emailError ? (
-            <Text style={{ color: 'red', marginBottom: 15 }}>{emailError}</Text>
+            <Text style={{ color: 'red', marginBottom: 15, textAlign: 'right' }}>{emailError}</Text>
           ) : null}
           <Text style={{ marginBottom: 8 }}>Password</Text>
           <View style={{ marginBottom: 16, position: 'relative' }}>
@@ -104,7 +106,13 @@ const SignInScreen = () => {
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
-              style={{ padding: 8, backgroundColor: 'white', borderRadius: 50 }}
+              style={{
+                padding: 8,
+                backgroundColor: 'white',
+                borderRadius: 50,
+                borderColor: 'rgba(128, 128, 128, 0.5)', // Reduced opacity of border color
+                borderWidth: 1,
+              }}
             />
             {password.length > 0 && (
               <TouchableOpacity
@@ -120,9 +128,7 @@ const SignInScreen = () => {
             )}
           </View>
           {passwordError ? (
-            <Text style={{ color: 'red', marginBottom: 15 }}>
-              {passwordError}
-            </Text>
+            <Text style={{ color: 'red', marginBottom: 15, textAlign: 'right' }}>{passwordError}</Text>
           ) : null}
           <TouchableOpacity
             onPress={handleSignIn}

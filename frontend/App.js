@@ -9,12 +9,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { Provider, useSelector } from 'react-redux';
 import { store } from './src/redux/store';
 import { selectTotalItems } from './src/redux/cartSlice';
-import Home from './src/screens/HomePage/Home';
 import AllProductsScreen from './src/screens/AllProductsScreen/AllProductsScreen';
 import ProductDetailsScreen from './src/screens/ProductDetailsScreen/ProductDetailsScreen';
 import CartScreen from './src/screens/CartScreen/CartScreen';
 import ProfileScreen from './src/screens/ProfileScreen/ProfileScreen';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import SignInScreen from './src/screens/SignInScreen/SignInScreen';
+import SignUpScreen from './src/screens/SignUpScreen/SignUpScreen';
 import { View, Text } from 'react-native';
 
 const Stack = createStackNavigator();
@@ -53,10 +53,8 @@ const TabNavigator = () => {
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
-          if (route.name === 'Home') {
-            iconName = 'home';
-          } else if (route.name === 'Shop') {
-            iconName = 'pricetag';
+          if (route.name === 'Shop') {
+            iconName = 'storefront'; // Changed icon name
           } else if (route.name === 'Cart') {
             iconName = 'cart';
           } else if (route.name === 'Profile') {
@@ -94,7 +92,6 @@ const TabNavigator = () => {
         tabBarInactiveTintColor: 'gray',
       })}
     >
-      <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Shop" component={AllProductsStack} />
       <Tab.Screen name="Cart" component={CartScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
@@ -106,7 +103,23 @@ const App = () => {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <TabNavigator />
+        <Stack.Navigator initialRouteName="SignIn">
+          <Stack.Screen
+            name="SignIn"
+            component={SignInScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="SignUp"
+            component={SignUpScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="MainApp"
+            component={TabNavigator}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
       </NavigationContainer>
     </Provider>
   );

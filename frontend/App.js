@@ -43,8 +43,9 @@ const AllProductsStack = () => (
   </Stack.Navigator>
 );
 
-const TabNavigator = () => {
+const TabNavigator = ({ route }) => {
   const totalItems = useSelector(selectTotalItems);
+  const { username } = route.params || {};
 
   return (
     <Tab.Navigator
@@ -97,7 +98,7 @@ const TabNavigator = () => {
         tabBarInactiveTintColor: 'gray',
       })}
     >
-      <Tab.Screen name="Shop" component={AllProductsStack} />
+      <Tab.Screen name="Shop" component={AllProductsStack} initialParams={{ username }} />
       <Tab.Screen name="Cart" component={CartScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>

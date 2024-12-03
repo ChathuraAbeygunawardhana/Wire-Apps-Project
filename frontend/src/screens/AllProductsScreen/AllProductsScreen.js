@@ -16,7 +16,8 @@ import {
 import { Appbar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 
-const AllProductsScreen = ({ navigation }) => {
+const AllProductsScreen = ({ navigation, route }) => {
+  const { username } = route.params || {};
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [isListView, setIsListView] = useState(false);
@@ -387,7 +388,7 @@ const AllProductsScreen = ({ navigation }) => {
       <Appbar.Header className="bg-white">
         <Appbar.BackAction onPress={() => navigation.navigate('SignIn')} />
         {!isSearchBarVisible && (
-          <Appbar.Content title="Shoes" className="items-center" />
+          <Appbar.Content title={username || "Shoes"} className="items-center" />
         )}
         {isSearchBarVisible && (
           <View

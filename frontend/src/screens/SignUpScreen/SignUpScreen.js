@@ -15,6 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const SignUpScreen = () => {
   const navigation = useNavigation();
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -23,6 +24,7 @@ const SignUpScreen = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [usernameError, setUsernameError] = useState('');
 
   const validateEmail = (email) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -58,20 +60,30 @@ const SignUpScreen = () => {
     return '';
   };
 
+  const validateUsername = (username) => {
+    if (username === '') {
+      return 'Username is required';
+    }
+    return '';
+  };
+
   const handleSignUp = () => {
+    const usernameValidationError = validateUsername(username);
     const emailValidationError = validateEmail(email);
     const passwordValidationError = validatePassword(password);
     const confirmPasswordValidationError = validateConfirmPassword(password, confirmPassword);
-    if (emailValidationError || passwordValidationError || confirmPasswordValidationError) {
+    if (usernameValidationError || emailValidationError || passwordValidationError || confirmPasswordValidationError) {
+      setUsernameError(usernameValidationError);
       setEmailError(emailValidationError);
       setPasswordError(passwordValidationError);
       setConfirmPasswordError(confirmPasswordValidationError);
       return;
     }
+    setUsernameError('');
     setEmailError('');
     setPasswordError('');
     setConfirmPasswordError('');
-    navigation.replace('MainApp');
+    navigation.replace('MainApp', { username });
   };
 
   return (
@@ -93,6 +105,20 @@ const SignUpScreen = () => {
           <Text style={{ fontSize: 24, marginBottom: 32, textAlign: 'center' }}>
             Create Account
           </Text>
+          <Text style={{ marginBottom: 8 }}>Username</Text>
+          <TextInput
+            value={username}
+            onChangeText={setUsername}
+            style={{
+              marginBottom: 16,
+              padding: 8,
+              backgroundColor: 'white',
+              borderRadius: 24,
+              borderColor: 'rgba(128, 128, 128, 0.5)',
+              borderWidth: 1,
+            }}
+          />
+          {usernameError ? <Text style={{ color: 'red', marginBottom: 15, textAlign: 'right' }}>{usernameError}</Text> : null}
           <Text style={{ marginBottom: 8 }}>Email</Text>
           <TextInput
             value={email}

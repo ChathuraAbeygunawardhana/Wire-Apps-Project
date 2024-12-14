@@ -12,11 +12,202 @@ import {
   TouchableWithoutFeedback,
   TextInput,
   Switch,
+  StyleSheet,
 } from 'react-native';
 import { Appbar, FAB } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import { UserContext } from '../../context/UserContext';
 import { ItemClickContext } from '../../context/ItemClickContext';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f0f0f0',
+  },
+  header: {
+    backgroundColor: 'white',
+  },
+  searchBar: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 5,
+    borderColor: 'lightgrey',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    marginRight: 10,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 8,
+    fontSize: 14,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    fontSize: 14,
+  },
+  flatListContent: {
+    paddingBottom: 16,
+  },
+  gridItem: {
+    flex: 1,
+    padding: 12,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  gridItemImage: {
+    width: '100%',
+    height: 120,
+    borderRadius: 8,
+  },
+  gridItemTitle: {
+    marginTop: 8,
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  gridItemContent: {
+    fontSize: 12,
+    color: '#666',
+  },
+  listItem: {
+    flexDirection: 'row',
+    marginBottom: 16,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    padding: 12,
+  },
+  listItemImage: {
+    width: 96,
+    height: 96,
+    borderRadius: 8,
+  },
+  listItemContent: {
+    flex: 1,
+    padding: 12,
+  },
+  listItemTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  listItemText: {
+    fontSize: 12,
+    color: '#666',
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    alignSelf: 'center',
+    backgroundColor: 'black',
+    padding: 16,
+    borderRadius: 28,
+    alignItems: 'center',
+  },
+  fabText: {
+    color: 'white',
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'end',
+  },
+  modalBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'gray',
+    opacity: 0.5,
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 8,
+    borderColor: 'gray',
+    borderWidth: 1,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  modalOption: {
+    padding: 8,
+  },
+  modalOptionText: {
+    fontSize: 14,
+  },
+  filterModalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  filterModalSectionTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  filterModalRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  filterModalText: {
+    fontSize: 14,
+    flex: 1,
+  },
+  filterModalSwitch: {
+    marginLeft: 8,
+  },
+  filterModalButtonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 16,
+  },
+  filterModalButton: {
+    padding: 8,
+    borderRadius: 8,
+  },
+  filterModalButtonText: {
+    fontSize: 14,
+  },
+  filterModalButtonDiscard: {
+    backgroundColor: 'white',
+    borderColor: 'black',
+    borderWidth: 1,
+  },
+  filterModalButtonApply: {
+    backgroundColor: 'black',
+  },
+  filterModalButtonTextDiscard: {
+    color: 'black',
+  },
+  filterModalButtonTextApply: {
+    color: 'white',
+  },
+});
 
 const AllProductsScreen = ({ navigation }) => {
   const { user } = useContext(UserContext);
@@ -50,13 +241,25 @@ const AllProductsScreen = ({ navigation }) => {
     setIsLoading(true);
     setHasError(false);
     fetch(
-      'https://s3-eu-west-1.amazonaws.com/api.themeshplatform.com/products.json'
+      'https://cars-database-with-image.p.rapidapi.com/api/search?q=Mercedes',
+      {
+        method: 'GET',
+        headers: {
+          'x-rapidapi-host': 'cars-database-with-image.p.rapidapi.com',
+          'x-rapidapi-key':
+            '970b4fa26fmsh397f674876f86dap1a656cjsna4e0c2863761',
+        },
+      }
     )
       .then((response) => response.json())
       .then((data) => {
-        if (data.result === 'success') {
-          setProducts(data.data);
-          setFilteredProducts(data.data);
+        if (data.results) {
+          // Filter unique products by title
+          const uniqueProducts = Array.from(
+            new Set(data.results.map((p) => p.title))
+          ).map((title) => data.results.find((p) => p.title === title));
+          setProducts(uniqueProducts);
+          setFilteredProducts(uniqueProducts);
         } else {
           setHasError(true);
         }
@@ -128,78 +331,58 @@ const AllProductsScreen = ({ navigation }) => {
   };
 
   const renderGridItem = ({ item, index }) => {
-    const currencySymbol =
-      item.price.currency === 'GBP' ? '£' : item.price.currency;
     return (
-      <TouchableOpacity
-        onPress={handleItemPress}
-        style={{
-          width: itemWidth,
-          marginBottom: 16,
-          marginLeft: index % 2 === 0 ? 0 : 22,
-        }}
-      >
+      <TouchableWithoutFeedback onPress={handleItemPress}>
         <View
           style={{
-            flex: 1,
-            padding: 12,
-            backgroundColor: 'white',
-            borderRadius: 8,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
+            width: itemWidth,
+            marginBottom: 16,
+            marginLeft: index % 2 === 0 ? 0 : 22,
           }}
         >
-          <Image
-            source={{ uri: item.mainImage }}
-            style={{ width: '100%', height: 120, borderRadius: 8 }}
-            resizeMode="contain"
-          />
-          <Text
-            style={{ marginTop: 8, fontSize: 14, fontWeight: 'bold' }}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {item.name}
-          </Text>
-          <Text style={{ fontSize: 12, color: '#666' }}>{item.brandName}</Text>
-          <Text style={{ fontSize: 12, color: '#666' }}>
-            {currencySymbol}
-            {item.price.amount}
-          </Text>
+          <View style={styles.gridItem}>
+            <Image
+              source={{ uri: item.image }}
+              style={styles.gridItemImage}
+              resizeMode="contain"
+            />
+            <Text
+              style={styles.gridItemTitle}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {item.title}
+            </Text>
+            <Text style={styles.gridItemContent}>{item.content}</Text>
+            <Text style={styles.gridItemContent}>{item.additional}</Text>
+          </View>
         </View>
-      </TouchableOpacity>
+      </TouchableWithoutFeedback>
     );
   };
+
   const renderListItem = ({ item }) => {
-    const currencySymbol =
-      item.price.currency === 'GBP' ? '£' : item.price.currency;
     return (
-      <TouchableOpacity
-        onPress={handleItemPress}
-        className="flex-row mb-4 bg-white rounded-lg shadow-md shadow-black/50 px-5"
-      >
-        <Image
-          source={{ uri: item.mainImage }}
-          className="w-24 h-24 rounded-l-lg"
-          resizeMode="contain"
-        />
-        <View className="flex-1 p-3">
-          <Text
-            className="text-sm font-bold"
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {item.name}
-          </Text>
-          <Text className="text-xs text-gray-600">{item.brandName}</Text>
-          <Text className="text-xs text-gray-600">
-            {item.price.amount} {currencySymbol}
-          </Text>
+      <TouchableWithoutFeedback onPress={handleItemPress}>
+        <View style={styles.listItem}>
+          <Image
+            source={{ uri: item.image }}
+            style={styles.listItemImage}
+            resizeMode="contain"
+          />
+          <View style={styles.listItemContent}>
+            <Text
+              style={styles.listItemTitle}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {item.title}
+            </Text>
+            <Text style={styles.listItemText}>{item.content}</Text>
+            <Text style={styles.listItemText}>{item.additional}</Text>
+          </View>
         </View>
-      </TouchableOpacity>
+      </TouchableWithoutFeedback>
     );
   };
 
@@ -211,27 +394,27 @@ const AllProductsScreen = ({ navigation }) => {
       onRequestClose={() => setIsSortModalVisible(false)}
     >
       <TouchableWithoutFeedback onPress={() => setIsSortModalVisible(false)}>
-        <View className="flex-1 justify-end">
-          <View className="absolute top-0 left-0 right-0 bottom-0 bg-gray-800 opacity-50" />
-          <View className="bg-white p-4 rounded-t-xl border border-gray-300">
-            <Text className="text-lg font-bold mb-4">Sort By</Text>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalBackground} />
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Sort By</Text>
             <TouchableOpacity
-              className="p-2"
+              style={styles.modalOption}
               onPress={() => sortProducts('lowToHigh')}
             >
-              <Text className="text-sm">Price: Low to High</Text>
+              <Text style={styles.modalOptionText}>Price: Low to High</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              className="p-2"
+              style={styles.modalOption}
               onPress={() => sortProducts('highToLow')}
             >
-              <Text className="text-sm">Price: High to Low</Text>
+              <Text style={styles.modalOptionText}>Price: High to Low</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              className="p-2"
+              style={styles.modalOption}
               onPress={() => sortProducts('newest')}
             >
-              <Text className="text-sm">Newest</Text>
+              <Text style={styles.modalOptionText}>Newest</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -247,18 +430,18 @@ const AllProductsScreen = ({ navigation }) => {
       onRequestClose={() => setIsFilterModalVisible(false)}
     >
       <TouchableWithoutFeedback onPress={() => setIsFilterModalVisible(false)}>
-        <View className="flex-1 justify-end">
-          <View className="absolute top-0 left-0 right-0 bottom-0 bg-gray-800 opacity-50" />
-          <View className="bg-white p-4 rounded-t-xl border border-gray-300">
-            <Text className="text-lg font-bold mb-4 text-center">Filter</Text>
-            <Text className="text-sm font-semibold mb-2">Price Range</Text>
-            <View className="flex-row items-center mb-4">
-              <Text className="text-sm flex-1">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalBackground} />
+          <View style={styles.modalContent}>
+            <Text style={styles.filterModalTitle}>Filter</Text>
+            <Text style={styles.filterModalSectionTitle}>Price Range</Text>
+            <View style={styles.filterModalRow}>
+              <Text style={styles.filterModalText}>
                 ${priceRange[0].toFixed(2)} - ${priceRange[1].toFixed(2)}
               </Text>
             </View>
-            <Text className="text-sm font-semibold mb-2 mt-2">Colours</Text>
-            <View className="flex-row flex-wrap justify-between mb-2">
+            <Text style={styles.filterModalSectionTitle}>Colours</Text>
+            <View style={styles.filterModalRow}>
               {[
                 'Blue',
                 'Black',
@@ -269,16 +452,25 @@ const AllProductsScreen = ({ navigation }) => {
               ].map((colour) => (
                 <TouchableOpacity
                   key={colour}
-                  className={`m-1 p-1 rounded-full items-center justify-center ${
-                    selectedColour === colour ? 'border-2 border-black' : ''
-                  }`}
-                  style={{ width: 40, height: 40 }}
+                  style={[
+                    styles.filterModalButton,
+                    selectedColour === colour
+                      ? { borderColor: 'black', borderWidth: 2 }
+                      : {},
+                  ]}
                   onPress={() =>
                     setSelectedColour(selectedColour === colour ? null : colour)
                   }
                 >
                   {colour === 'Multicoloured' ? (
-                    <View className="w-8 h-8 rounded-full overflow-hidden flex-row">
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        width: 40,
+                        height: 40,
+                        borderRadius: 20,
+                      }}
+                    >
                       {[
                         'red',
                         'orange',
@@ -290,51 +482,62 @@ const AllProductsScreen = ({ navigation }) => {
                       ].map((color, index) => (
                         <View
                           key={index}
-                          className="flex-1"
-                          style={{ backgroundColor: color }}
+                          style={{ flex: 1, backgroundColor: color }}
                         />
                       ))}
                     </View>
                   ) : (
                     <View
-                      className="w-8 h-8 rounded-full"
-                      style={{ backgroundColor: colour.toLowerCase() }}
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 20,
+                        backgroundColor: colour.toLowerCase(),
+                      }}
                     />
                   )}
                 </TouchableOpacity>
               ))}
             </View>
-            <Text className="text-sm font-semibold mb-2 mt-2">Brands</Text>
-            <View className="flex-row flex-wrap justify-between">
+            <Text style={styles.filterModalSectionTitle}>Brands</Text>
+            <View style={styles.filterModalRow}>
               {['Nike', 'Adidas', 'Puma', 'Reebok'].map((brand) => (
                 <TouchableOpacity
                   key={brand}
-                  className={`flex-1 m-1 p-2 rounded-full border items-center justify-center ${
-                    selectedBrand === brand ? 'bg-black' : 'bg-white'
-                  }`}
+                  style={[
+                    styles.filterModalButton,
+                    selectedBrand === brand
+                      ? styles.filterModalButtonApply
+                      : styles.filterModalButtonDiscard,
+                  ]}
                   onPress={() =>
                     setSelectedBrand(selectedBrand === brand ? null : brand)
                   }
                 >
                   <Text
-                    className={`text-center ${
-                      selectedBrand === brand ? 'text-white' : 'text-black'
-                    }`}
+                    style={
+                      selectedBrand === brand
+                        ? styles.filterModalButtonTextApply
+                        : styles.filterModalButtonTextDiscard
+                    }
                   >
                     {brand}
                   </Text>
                 </TouchableOpacity>
               ))}
             </View>
-            <Text className="text-sm font-semibold mb-2 mt-2">In Stock</Text>
-            <View className="flex-row items-center mb-4">
+            <Text style={styles.filterModalSectionTitle}>In Stock</Text>
+            <View style={styles.filterModalRow}>
               <Switch
                 value={isInStock}
                 onValueChange={(value) => setIsInStock(value)}
                 trackColor={{ false: '#767577', true: '#908f91' }}
                 thumbColor={isInStock ? '#000' : '#f4f3f4'}
+                style={styles.filterModalSwitch}
               />
-              <Text className="ml-2 text-sm">{isInStock ? 'Yes' : 'No'}</Text>
+              <Text style={styles.filterModalText}>
+                {isInStock ? 'Yes' : 'No'}
+              </Text>
             </View>
             <View
               style={{
@@ -343,18 +546,24 @@ const AllProductsScreen = ({ navigation }) => {
                 marginVertical: 10,
               }}
             />
-            <View className="flex-row justify-between mt-4">
+            <View style={styles.filterModalButtonRow}>
               <TouchableOpacity
-                className="bg-white border border-black px-4 py-2 rounded-full"
+                style={[
+                  styles.filterModalButton,
+                  styles.filterModalButtonDiscard,
+                ]}
                 onPress={discardFilters}
               >
-                <Text className="text-black">Discard</Text>
+                <Text style={styles.filterModalButtonTextDiscard}>Discard</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="bg-black px-4 py-2 rounded-full"
+                style={[
+                  styles.filterModalButton,
+                  styles.filterModalButtonApply,
+                ]}
                 onPress={applyFilters}
               >
-                <Text className="text-white">Apply</Text>
+                <Text style={styles.filterModalButtonTextApply}>Apply</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -380,31 +589,23 @@ const AllProductsScreen = ({ navigation }) => {
       const filtered = products.filter((product) =>
         product.name.toLowerCase().includes(query.toLowerCase())
       );
-      setFilteredProducts(filtered);
+      // Ensure search results maintain unique titles
+      const uniqueFiltered = Array.from(
+        new Set(filtered.map((p) => p.title))
+      ).map((title) => filtered.find((p) => p.title === title));
+      setFilteredProducts(uniqueFiltered);
     } else {
       setFilteredProducts(products);
     }
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#f0f0f0' }}>
-      <Appbar.Header className="bg-white">
+    <SafeAreaView style={styles.container}>
+      <Appbar.Header style={styles.header}>
         <Appbar.BackAction onPress={() => navigation.navigate('SignIn')} />
         <Appbar.Content title={username || 'Shoes'} className="items-center" />
         {isSearchBarVisible && (
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              alignItems: 'center',
-              backgroundColor: 'white',
-              borderRadius: 5,
-              borderColor: 'lightgrey',
-              borderWidth: 1,
-              paddingHorizontal: 10,
-              marginRight: 10,
-            }}
-          >
+          <View style={styles.searchBar}>
             <TextInput
               ref={searchInputRef}
               style={{ flex: 1 }}
@@ -423,25 +624,19 @@ const AllProductsScreen = ({ navigation }) => {
           style={{ opacity: 0 }}
         />
       </Appbar.Header>
-      <View className="flex-1 mx-3 mt-4">
+      <View style={{ flex: 1, marginHorizontal: 12 }}>
         {isLoading ? (
-          <View
-            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-          >
+          <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#4e4e68" />
-            <Text style={{ marginTop: 8, fontSize: 14 }}>Loading products</Text>
+            <Text style={styles.loadingText}>Loading products</Text>
           </View>
         ) : hasError ? (
-          <View
-            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-          >
-            <Text style={{ fontSize: 14 }}>Couldn't find any products</Text>
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>Couldn't find any products</Text>
           </View>
         ) : filteredProducts.length === 0 ? (
-          <View
-            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-          >
-            <Text style={{ fontSize: 14 }}>
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>
               No products were found matching your selection
             </Text>
           </View>
@@ -452,27 +647,13 @@ const AllProductsScreen = ({ navigation }) => {
             renderItem={isListView ? renderListItem : renderGridItem}
             keyExtractor={(item) => item.id}
             numColumns={isListView ? 1 : 2}
-            contentContainerStyle={{ paddingBottom: 16 }}
+            contentContainerStyle={[styles.flatListContent, { paddingTop: 12 }]}
             showsVerticalScrollIndicator={false}
           />
         )}
       </View>
-      <TouchableOpacity
-        style={{
-          position: 'absolute',
-          margin: 16,
-          right: 0,
-          bottom: 0,
-          left: 0,
-          alignSelf: 'center',
-          backgroundColor: 'black',
-          padding: 16,
-          borderRadius: 28,
-          alignItems: 'center',
-        }}
-        onPress={() => {}}
-      >
-        <Text style={{ color: 'white' }}>{`Items Pressed: ${itemPressCount}`}</Text>
+      <TouchableOpacity style={styles.fab} onPress={() => {}}>
+        <Text style={styles.fabText}>{`Items Pressed: ${itemPressCount}`}</Text>
       </TouchableOpacity>
       {renderSortModal()}
       {renderFilterModal()}

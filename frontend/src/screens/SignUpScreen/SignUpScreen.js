@@ -13,6 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { UserContext } from '../../context/UserContext';
+import { validateUsername, validatePassword, validateConfirmPassword } from '../../hooks/useValidation';
 
 const SignUpScreen = () => {
   const navigation = useNavigation();
@@ -26,52 +27,29 @@ const SignUpScreen = () => {
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
-  const validateUsername = (username) => {
-    if (username === '') {
-      return 'Username is required';
-    }
-    return '';
+  const handleUsernameChange = (text) => {
+    setUsername(text);
+    setUsernameError(validateUsername(text));
   };
 
-  const validatePassword = (password) => {
-    if (password === '') {
-      return 'Password is required';
-    } else if (password.length < 8) {
-      return 'Password must be at least 8 characters';
-    } else if (password.length > 64) {
-      return 'Password must be less than 64 characters';
-    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/.test(password)) {
-      return 'Password must contain an uppercase letter, a lowercase letter, a number, and a special character';
-    } else if (/\s/.test(password)) {
-      return 'Password must not contain spaces';
+  const handlePasswordChange = (text) => {
+    setPassword(text);
+    setPasswordError(validatePassword(text));
+    if (confirmPassword) {
+      setConfirmPasswordError(validateConfirmPassword(text, confirmPassword));
     }
-    return '';
   };
 
-  const validateConfirmPassword = (password, confirmPassword) => {
-    if (confirmPassword === '') {
-      return 'Confirm Password is required';
-    } else if (password !== confirmPassword) {
-      return 'Passwords do not match';
-    }
-    return '';
+  const handleConfirmPasswordChange = (text) => {
+    setConfirmPassword(text);
+    setConfirmPasswordError(validateConfirmPassword(password, text));
   };
 
   const handleSignUp = () => {
-    const usernameValidationError = validateUsername(username);
-    const passwordValidationError = validatePassword(password);
-    const confirmPasswordValidationError = validateConfirmPassword(password, confirmPassword);
-    if (usernameValidationError || passwordValidationError || confirmPasswordValidationError) {
-      setUsernameError(usernameValidationError);
-      setPasswordError(passwordValidationError);
-      setConfirmPasswordError(confirmPasswordValidationError);
-      return;
+    if (!usernameError && !passwordError && !confirmPasswordError && username && password && confirmPassword) {
+      setUser({ username, password });
+      navigation.replace('MainApp', { username });
     }
-    setUsernameError('');
-    setPasswordError('');
-    setConfirmPasswordError('');
-    setUser({ username, password });
-    navigation.replace('MainApp', { username });
   };
 
   return (
@@ -96,7 +74,7 @@ const SignUpScreen = () => {
           <Text style={{ marginBottom: 8 }}>Username</Text>
           <TextInput
             value={username}
-            onChangeText={setUsername}
+            onChangeText={handleUsernameChange}
             style={{
               marginBottom: 16,
               padding: 8,
@@ -111,7 +89,7 @@ const SignUpScreen = () => {
           <View style={{ marginBottom: 16, position: 'relative' }}>
             <TextInput
               value={password}
-              onChangeText={setPassword}
+              onChangeText={handlePasswordChange}
               secureTextEntry={!showPassword}
               style={{ 
                 padding: 8, 
@@ -139,7 +117,7 @@ const SignUpScreen = () => {
           <View style={{ marginBottom: 16, position: 'relative' }}>
             <TextInput
               value={confirmPassword}
-              onChangeText={setConfirmPassword}
+              onChangeText={handleConfirmPasswordChange}
               secureTextEntry={!showConfirmPassword}
               style={{ 
                 padding: 8, 

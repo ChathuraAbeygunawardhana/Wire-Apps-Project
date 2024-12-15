@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   flatListContent: {
-    paddingBottom: 16,
+    paddingBottom: 80, // Increased padding to account for FAB
   },
   gridItem: {
     flex: 1,
@@ -218,11 +218,13 @@ const AllProductsScreen = ({ navigation }) => {
             >
               {cleanTitle(item.title)}
             </Text>
-            <Text style={styles.gridItemContent} numberOfLines={2}>
-              Description : {item.content}
+            <Text style={styles.gridItemContent}>
+              <Text style={{ fontWeight: 'bold' }}>Description: </Text>
+              {item.content}
             </Text>
             <Text style={styles.gridItemContent}>
-              status:{extractKmPerLiter(item.wr)}
+              <Text style={{ fontWeight: 'bold' }}>status: </Text>
+              {extractKmPerLiter(item.wr)}
             </Text>
           </View>
         </View>
@@ -247,10 +249,12 @@ const AllProductsScreen = ({ navigation }) => {
             >
               {cleanTitle(item.title)}
             </Text>
-            <Text style={styles.listItemText} numberOfLines={2}>
+            <Text style={styles.listItemText}>
+              <Text style={{ fontWeight: 'bold' }}>Description: </Text>
               {item.content}
             </Text>
             <Text style={styles.listItemText}>
+              <Text style={{ fontWeight: 'bold' }}>status: </Text>
               {extractKmPerLiter(item.wr)}
             </Text>
           </View>

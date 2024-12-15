@@ -13,6 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { UserContext } from '../../context/UserContext';
+import { validateUsername, validatePassword } from '../../hooks/useValidation';
 
 const SignInScreen = () => {
   const navigation = useNavigation();
@@ -23,44 +24,21 @@ const SignInScreen = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  const validateUsername = (username) => {
-    if (username === '') {
-      return 'Username is required';
-    }
-    return '';
+  const handleUsernameChange = (text) => {
+    setUsername(text);
+    setEmailError(validateUsername(text));
   };
 
-  const validatePassword = (password) => {
-    if (password === '') {
-      return 'Password is required';
-    } else if (password.length < 8) {
-      return 'Password must be at least 8 characters';
-    } else if (password.length > 64) {
-      return 'Password must be less than 64 characters';
-    } else if (
-      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/.test(
-        password
-      )
-    ) {
-      return 'Password must contain an uppercase letter, a lowercase letter, a number, and a special character';
-    } else if (/\s/.test(password)) {
-      return 'Password must not contain spaces';
-    }
-    return '';
+  const handlePasswordChange = (text) => {
+    setPassword(text);
+    setPasswordError(validatePassword(text));
   };
 
   const handleSignIn = () => {
-    const usernameValidationError = validateUsername(username);
-    const passwordValidationError = validatePassword(password);
-    if (usernameValidationError || passwordValidationError) {
-      setEmailError(usernameValidationError);
-      setPasswordError(passwordValidationError);
-      return;
+    if (!emailError && !passwordError && username && password) {
+      setUser({ username, password });
+      navigation.replace('MainApp', { username });
     }
-    setEmailError('');
-    setPasswordError('');
-    setUser({ username, password });
-    navigation.replace('MainApp', { username });
   };
 
   return (
@@ -85,7 +63,7 @@ const SignInScreen = () => {
           <Text style={{ marginBottom: 8 }}>Username</Text>
           <TextInput
             value={username}
-            onChangeText={setUsername}
+            onChangeText={handleUsernameChange}
             autoCapitalize="none"
             style={{
               marginBottom: 16,
@@ -103,7 +81,7 @@ const SignInScreen = () => {
           <View style={{ marginBottom: 16, position: 'relative' }}>
             <TextInput
               value={password}
-              onChangeText={setPassword}
+              onChangeText={handlePasswordChange}
               secureTextEntry={!showPassword}
               style={{
                 padding: 8,

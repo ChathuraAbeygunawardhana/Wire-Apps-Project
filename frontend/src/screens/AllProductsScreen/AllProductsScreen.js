@@ -76,12 +76,14 @@ const styles = StyleSheet.create({
   },
   gridItemTitle: {
     marginTop: 8,
+    marginBottom: 8,  // Added margin
     fontSize: 14,
     fontWeight: 'bold',
   },
   gridItemContent: {
     fontSize: 12,
     color: '#666',
+    marginBottom: 8,  // Added margin
   },
   listItem: {
     flexDirection: 'row',
@@ -107,10 +109,12 @@ const styles = StyleSheet.create({
   listItemTitle: {
     fontSize: 14,
     fontWeight: 'bold',
+    marginBottom: 8,  // Added margin
   },
   listItemText: {
     fontSize: 12,
     color: '#666',
+    marginBottom: 8,  // Added margin
   },
   fab: {
     position: 'absolute',
@@ -128,6 +132,15 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 });
+
+const extractKmPerLiter = (wrString) => {
+  const match = wrString.match(/(\d+\.?\d*)\s*km\/l/);
+  return match ? `${match[1]}km/l` : 'N/A';
+};
+
+const cleanTitle = (title) => {
+  return title.replace('Mercedes-Benz ', '');
+};
 
 const AllProductsScreen = ({ navigation }) => {
   const { user } = useContext(UserContext);
@@ -203,10 +216,14 @@ const AllProductsScreen = ({ navigation }) => {
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {item.title}
+              {cleanTitle(item.title)}
             </Text>
-            <Text style={styles.gridItemContent}>{item.content}</Text>
-            <Text style={styles.gridItemContent}>{item.additional}</Text>
+            <Text style={styles.gridItemContent} numberOfLines={2}>
+              Description : {item.content}
+            </Text>
+            <Text style={styles.gridItemContent}>
+              status:{extractKmPerLiter(item.wr)}
+            </Text>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -228,10 +245,14 @@ const AllProductsScreen = ({ navigation }) => {
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {item.title}
+              {cleanTitle(item.title)}
             </Text>
-            <Text style={styles.listItemText}>{item.content}</Text>
-            <Text style={styles.listItemText}>{item.additional}</Text>
+            <Text style={styles.listItemText} numberOfLines={2}>
+              {item.content}
+            </Text>
+            <Text style={styles.listItemText}>
+              {extractKmPerLiter(item.wr)}
+            </Text>
           </View>
         </View>
       </TouchableWithoutFeedback>
